@@ -1,0 +1,50 @@
+### Gradle ###
+.gradle
+bin/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+logs/
+
+### Visual Studio Code ###
+.vscode
+.history/
+
+### User config
+config/*.json
+config/application-*.yml
+src/main/resources/application-*.yml
+
+## Maven
+target
+
+## Vaadin
+tsconfig.json
+types.d.ts
+webpack*
+package*.json
+pnpm*
+node_modules/
+vaadin.ts
+.npmrc
+frontend/
+vite.*
