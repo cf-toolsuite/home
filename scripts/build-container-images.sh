@@ -67,7 +67,7 @@ if [ "$MODE" == "archivist-only" ] || [ "$MODE" == "full-install" ]; then
   pack build cf-toolsuite/cf-archivist \
     --path . \
     --env BP_MAVEN_BUILD_ARGUMENTS="clean verify --batch-mode -DskipTests" \
-    --env BP_MAVEN_ACTIVE_PROFILES=production,expose-runtime-metadata \
+    --env BP_MAVEN_ACTIVE_PROFILES=mysql,production,expose-runtime-metadata \
     --env BP_JVM_VERSION=21.* \
     --builder paketobuildpacks/builder-jammy-full \
     --volume $HOME/.m2:/home/cnb/.m2:rw
