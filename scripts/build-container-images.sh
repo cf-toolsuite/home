@@ -18,6 +18,7 @@ if [ "$CLONE_PROJECTS" == "true" ]; then
   gh repo clone cf-toolsuite/cf-hoover
   gh repo clone cf-toolsuite/cf-hoover-ui
   gh repo clone cf-toolsuite/cf-archivist
+  gh repo clone cf-toosuite/home
 fi
 
 echo "-- Building spring-boot-starter-runtime-metadata"
@@ -72,6 +73,40 @@ if [ "$MODE" == "archivist-only" ] || [ "$MODE" == "full-install" ]; then
     --builder paketobuildpacks/builder-jammy-full \
     --volume $HOME/.m2:/home/cnb/.m2:rw
   cd ..
+fi
+
+cd home/footprints/local/support
+./mvnw -pl . -am clean install
+cd ../../../../
+
+if [ "$MODE" == "support-only" ] || [ "$MODE" == "full-install" ]; then
+  cd home/footprints/local/support/config-server
+  pack build cf-toolsuite/config-server \
+    --path . \
+    --env BP_JVM_VERSION=21.* \
+    --builder paketobuildpacks/builder-jammy-full \
+    --volume $HOME/.m2:/home/cnb/.m2:rw
+  cd ../../../../../
+fi
+
+if [ "$MODE" == "support-only" ] || [ "$MODE" == "full-install" ]; then
+  cd home/footprints/local/support/discovery-service
+  pack build cf-toolsuite/discovery-service \
+    --path . \
+    --env BP_JVM_VERSION=21.* \
+    --builder paketobuildpacks/builder-jammy-full \
+    --volume $HOME/.m2:/home/cnb/.m2:rw
+  cd ../../../../../
+fi
+
+if [ "$MODE" == "support-only" ] || [ "$MODE" == "full-install" ]; then
+  cd home/footprints/local/support/microservices-console
+  pack build cf-toolsuite/microservices-console \
+    --path . \
+    --env BP_JVM_VERSION=21.* \
+    --builder paketobuildpacks/builder-jammy-full \
+    --volume $HOME/.m2:/home/cnb/.m2:rw
+  cd ../../../../../
 fi
 
 echo "-- Completed building container images"

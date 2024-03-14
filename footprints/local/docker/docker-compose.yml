@@ -1,0 +1,143 @@
+# DOCKER COMPOSE CONFIGURATION
+# This file uses the version 3 docker-compose file format, described here:
+# https://docs.docker.com/compose/compose-file/compose-file-v3/#compose-file-structure-and-examples
+
+version: '3.8'
+
+services:
+
+  ## INFRASTRUCTURE SERVICES
+
+  ### PROMETHEUS
+  prometheus:
+    image: prom/prometheus:v2.50.1
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+      - prometheus_data:/prometheus
+    ports:
+      - 9090:9090
+
+  node-exporter:
+    image: quay.io/prometheus/node-exporter:master
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+      - /:/host:ro,rslave
+    command:
+      - '--path.rootfs=/host'
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - --collector.filesystem.ignored-mount-points
+      - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
+    ports:
+      - 9100:9100
+    restart: always
+
+  ### GRAFANA
+  grafana:
+    image: grafana/grafana:10.3.4
+    ports:
+      - 3000:3000
+    restart: always
+    env_file:
+      - ./monitoring/grafana.env
+    links:
+      - prometheus
+
+  ### DATABASE
+  archivist-db:
+    image: mysql:8.3.0
+    privileged: true
+    ports:
+      - 3307:3306
+    restart: always
+    env_file:
+      - ./mysql/butler.env
+    volumes:
+      - archivist-db-data:/var/lib/mysql
+
+  butler-db:
+    image: mysql:8.3.0
+    privileged: true
+    ports:
+      - 3306:3306
+    restart: always
+    env_file:
+      - ./mysql/butler.env
+    volumes:
+      - butler-db-data:/var/lib/mysql
+
+  ### DATABASE ADMINISTRATION
+  archivist-db-admin:
+    image: phpmyadmin:5.2.1-apache
+    ports:
+      - 5052:80
+    restart: always
+    env_file:
+      - ./phpmyadmin/admin.env
+    links:
+      - archivist-db
+
+  butler-db-admin:
+    image: phpmyadmin:5.2.1-apache
+    ports:
+      - 5050:80
+    restart: always
+    env_file:
+      - ./phpmyadmin/admin.env
+    links:
+      - butler-db
+
+
+  ## NEFLIX OSS, SUPPORT SERVICES
+
+  ### CONFIGURATION MANAGEMENT
+  hoover-config-service:
+    image: cf-toolsuite/config-server
+    ports:
+      - 8888:8888
+    environment:
+      - DOCKER_IP=$DOCKER_IP
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE="info,health,heapdump,threaddump,metrics,scheduledtasks,loggers,mappings,prometheus"
+      - JAVA_OPTS=-Xmx2g -XX:+UseG1GC -XX:+UseStringDeduplication
+      - EUREKA_CLIENT_REGISTER_WITH_EUREKA=false
+      - EUREKA_CLIENT_FETCH_REGISTRY=false
+      - SERVER_PORT=8888
+      - SPRING_CLOUD_CONFIG_SERVER_GIT_URI=https://github.com/pacphi/cf-hoover-config
+      - SPRING_CLOUD_CONFIG_SERVER_GIT_DEFAULT-LABEL=main
+
+  ### EUREKA, DISCOVERY
+  discovery-service:
+    image: cf-toolsuite/discovery-service
+    ports:
+      - 8761:8761
+    environment:
+      - DOCKER_IP=$DOCKER_IP
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE="info,health,heapdump,threaddump,metrics,scheduledtasks,loggers,mappings,prometheus"
+      - SPRING_APPLICATION_NAME=discovery-service
+      - JAVA_OPTS=-Xmx2g -XX:+UseG1GC -XX:+UseStringDeduplication
+
+
+  ## SPRING BOOT SERVICE ADMINISTRATION
+  springboot-admin:
+    image: cf-toolsuite/microservices-console
+    ports:
+      - 5555:5555
+    links:
+      - discovery-service
+    environment:
+      - DOCKER_IP=$DOCKER_IP
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE="info,health,heapdump,threaddump,metrics,scheduledtasks,loggers,mappings,prometheus"
+      - RIBBON_SERVER-LIST-REFRESH-INTERVAL=1000
+      - SERVER_PORT=5555
+      - SERVER_COMPRESSION_ENABLED=true
+      - SPRING_JACKSON_SERIALIZATION_INDENT-OUTPUT=true
+      - SPRING_APPLICATION_NAME=microservices-console
+      - SPRING_CLOUD_DISCOVERY_ENABLED=true
+      - JAVA_OPTS=-Xmx1g -XX:+UseG1GC -XX:+UseStringDeduplication
+
+volumes:
+  archivist-db-data: { }
+  butler-db-data: { }
+  prometheus_data: { }

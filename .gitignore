@@ -36,6 +36,7 @@ src/main/resources/application-*.yml
 
 ## Maven
 target
+src/main/resources-filtered
 
 ## Vaadin
 tsconfig.json
