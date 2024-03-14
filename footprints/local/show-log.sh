@@ -3,7 +3,7 @@
 set -e
 
 if [ -z "$1" ]; then
-    echo "Usage: ./show-log.sh toolsuite {service_name}"
+    echo "Usage: ./show-log.sh {suffix} {service_name}"
     exit 1
 fi
 

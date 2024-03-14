@@ -2,11 +2,6 @@
 
 set -e
 
-if [ -z "$1" ]; then
-    echo "Usage: ./startup.sh toolsuite"
-    exit 1
-fi
-
 suffix="${1:-toolsuite}"
 
 export DOCKER_IP="host.docker.internal"
@@ -19,21 +14,23 @@ fi
 # Change directories
 cd docker
 
-# Start the config services first and wait for them to become available
-docker compose up -d butler-config-service
-docker compose up -d archivist-config-service
+# Start prometheus and wait for it to become available
+docker compose up -d prometheus
 
-while [ -z "$CONFIG_SERVICE_READY" ]; do
-  echo "Waiting for cf-butler config service..."
-  if [ "$(curl --silent "$DOCKER_IP":8888/actuator/health 2>&1 | grep -q '\"status\":\"UP\"'; echo $?)" = 0 ]; then
-      CONFIG_SERVICE_READY=true;
+while [ -z "$PROMTHEUS_READY" ]; do
+  echo "Waiting for prometheus to becom healthy..."
+  if [ "$(curl --silent "$DOCKER_IP":9090/-/healthy 2>&1 | grep -q 'Prometheus Server is Healthy'; echo $?)" = 0 ]; then
+      PROMTHEUS_READY=true;
   fi
   sleep 5
 done
 
+# Start the config service second and wait for it to become available
+docker compose up -d hoover-config-service
+
 while [ -z "$CONFIG_SERVICE_READY" ]; do
-  echo "Waiting for cf-archivist config service..."
-  if [ "$(curl --silent "$DOCKER_IP":8889/actuator/health 2>&1 | grep -q '\"status\":\"UP\"'; echo $?)" = 0 ]; then
+  echo "Waiting for cf-hoover config service..."
+  if [ "$(curl --silent "$DOCKER_IP":8888/actuator/health 2>&1 | grep -q '\"status\":\"UP\"'; echo $?)" = 0 ]; then
       CONFIG_SERVICE_READY=true;
   fi
   sleep 5

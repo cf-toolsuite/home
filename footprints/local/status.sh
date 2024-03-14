@@ -2,11 +2,6 @@
 
 set -e
 
-if [ -z "$1" ]; then
-    echo "Usage: ./status.sh toolsuite"
-    exit 1
-fi
-
 suffix="${1:-toolsuite}"
 
 export DOCKER_IP="host.docker.internal"

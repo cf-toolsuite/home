@@ -95,11 +95,16 @@ services:
   ### CONFIGURATION MANAGEMENT
   hoover-config-service:
     image: cf-toolsuite/config-server
+    links:
+      - prometheus
     ports:
       - 8888:8888
     environment:
       - DOCKER_IP=$DOCKER_IP
-      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE="info,health,heapdump,threaddump,metrics,scheduledtasks,loggers,mappings,prometheus"
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus
+      - MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED=true
+      - MANAGEMENT_ENDPOINT_HEALTH_SHOW-DETAILS=always
+      - MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED=true
       - JAVA_OPTS=-Xmx2g -XX:+UseG1GC -XX:+UseStringDeduplication
       - EUREKA_CLIENT_REGISTER_WITH_EUREKA=false
       - EUREKA_CLIENT_FETCH_REGISTRY=false
@@ -110,11 +115,16 @@ services:
   ### EUREKA, DISCOVERY
   discovery-service:
     image: cf-toolsuite/discovery-service
+    links:
+      - prometheus
     ports:
       - 8761:8761
     environment:
       - DOCKER_IP=$DOCKER_IP
-      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE="info,health,heapdump,threaddump,metrics,scheduledtasks,loggers,mappings,prometheus"
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus
+      - MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED=true
+      - MANAGEMENT_ENDPOINT_HEALTH_SHOW-DETAILS=always
+      - MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED=true
       - SPRING_APPLICATION_NAME=discovery-service
       - JAVA_OPTS=-Xmx2g -XX:+UseG1GC -XX:+UseStringDeduplication
 
@@ -126,9 +136,13 @@ services:
       - 5555:5555
     links:
       - discovery-service
+      - prometheus
     environment:
       - DOCKER_IP=$DOCKER_IP
-      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE="info,health,heapdump,threaddump,metrics,scheduledtasks,loggers,mappings,prometheus"
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus
+      - MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED=true
+      - MANAGEMENT_ENDPOINT_HEALTH_SHOW-DETAILS=always
+      - MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED=true
       - RIBBON_SERVER-LIST-REFRESH-INTERVAL=1000
       - SERVER_PORT=5555
       - SERVER_COMPRESSION_ENABLED=true

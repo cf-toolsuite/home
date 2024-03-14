@@ -23,7 +23,10 @@ services:
       - DOCKER_IP=$DOCKER_IP
       - JAVA_OPTS=-Xmx512m -XX:+UseG1GC -XX:+UseStringDeduplication -Djava.security.egd=file:///dev/urandom -Xmx3G -XX:MaxDirectMemorySize=1G
       - JAVA_ARTIFACTS_FETCH_MODE=obtain-jars-from-runtime-metadata
-      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE="info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus"
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus
+      - MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED=true
+      - MANAGEMENT_ENDPOINT_HEALTH_SHOW-DETAILS=always
+      - MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED=true
 
   archivist:
     image: cf-toolsuite/cf-archivist
@@ -41,14 +44,17 @@ services:
       - DOCKER_IP=$DOCKER_IP
       - JAVA_OPTS=-Xmx512m -XX:+UseG1GC -XX:+UseStringDeduplication -Djava.security.egd=file:///dev/urandom -Xmx2G
       - JAVA_ARTIFACTS_FETCH_MODE=obtain-jars-from-runtime-metadata
-      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE="info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus"
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus
+      - MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED=true
+      - MANAGEMENT_ENDPOINT_HEALTH_SHOW-DETAILS=always
+      - MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED=true
 
   hoover:
     image: cf-toolsuite/cf-hoover
     ports:
       - 8082:8082
     links:
-      - config-service
+      - hoover-config-service
       - discovery-service
       - prometheus
     environment:
@@ -58,7 +64,10 @@ services:
       - DOCKER_IP=$DOCKER_IP
       - JAVA_OPTS=-Xmx512m -XX:+UseG1GC -XX:+UseStringDeduplication -Djava.security.egd=file:///dev/urandom -Xmx2G
       - JAVA_ARTIFACTS_FETCH_MODE=obtain-jars-from-runtime-metadata
-      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE="info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus"
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus
+      - MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED=true
+      - MANAGEMENT_ENDPOINT_HEALTH_SHOW-DETAILS=always
+      - MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED=true
 
   hoover-ui:
     image: cf-toolsuite/cf-hoover-ui
@@ -74,4 +83,7 @@ services:
       - DOCKER_IP=$DOCKER_IP
       - JAVA_OPTS=-Xmx512m -XX:+UseG1GC -XX:+UseStringDeduplication -Djava.security.egd=file:///dev/urandom -Xmx2G
       - JAVA_ARTIFACTS_FETCH_MODE=obtain-jars-from-runtime-metadata
-      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE="info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus"
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus
+      - MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED=true
+      - MANAGEMENT_ENDPOINT_HEALTH_SHOW-DETAILS=always
+      - MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED=true
