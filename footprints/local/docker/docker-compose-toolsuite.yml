@@ -18,10 +18,13 @@ services:
       - prometheus
       - butler-db
     environment:
-      - SPRING_APPLICATION_NAME=cf-butler
-      - SPRING_PROFILES_ACTIVE=cloud,on-demand
+      - SPRING_APPLICATION_NAME=butler
+      - SPRING_PROFILES_ACTIVE=on-demand
+      - SPRING_R2DBC_URL=r2dbc:mysql://butler-db:3306/cf-butler
+      - SPRING_R2DBC_USERNAME=dbadmin
+      - SPRING_R2DBC_PASSWORD=thunderb0lt!
       - DOCKER_IP=$DOCKER_IP
-      - JAVA_OPTS=-Xmx512m -XX:+UseG1GC -XX:+UseStringDeduplication -Djava.security.egd=file:///dev/urandom -Xmx3G -XX:MaxDirectMemorySize=1G
+      - JAVA_OPTS=-XX:+UseG1GC -XX:+UseStringDeduplication -Djava.security.egd=file:///dev/urandom -Xmx3G -XX:MaxDirectMemorySize=1G
       - JAVA_ARTIFACTS_FETCH_MODE=obtain-jars-from-runtime-metadata
       - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus
       - MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED=true
@@ -35,34 +38,45 @@ services:
     env_file:
       - ./config/archivist.env
     links:
-      - prometheus
       - archivist-db
+      - discovery-service
+      - prometheus
     environment:
-      - SPRING_APPLICATION_NAME=cf-archivist
-      - SPRING_PROFILES_ACTIVE=cloud,on-demand
+      - CF_BASE-URL=http://hoover
+      - SPRING_APPLICATION_NAME=archivist
+      - SPRING_PROFILES_ACTIVE=on-demand
+      - SPRING_R2DBC_URL=r2dbc:mysql://archivist-db:3306/cf-archivist
+      - SPRING_R2DBC_USERNAME=dbadmin
+      - SPRING_R2DBC_PASSWORD=thunderb0lt!
       - SERVER_PORT=8081
       - DOCKER_IP=$DOCKER_IP
-      - JAVA_OPTS=-Xmx512m -XX:+UseG1GC -XX:+UseStringDeduplication -Djava.security.egd=file:///dev/urandom -Xmx2G
+      - JAVA_OPTS=-XX:+UseG1GC -XX:+UseStringDeduplication -Djava.security.egd=file:///dev/urandom -Xmx2G
       - JAVA_ARTIFACTS_FETCH_MODE=obtain-jars-from-runtime-metadata
       - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus
       - MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED=true
       - MANAGEMENT_ENDPOINT_HEALTH_SHOW-DETAILS=always
       - MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED=true
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 3s
+        max_attempts: 5
+        window: 60s
 
   hoover:
     image: cf-toolsuite/cf-hoover
     ports:
       - 8082:8082
     links:
-      - hoover-config-service
+      - config-service
       - discovery-service
       - prometheus
     environment:
-      - SPRING_APPLICATION_NAME=cf-hoover
-      - SPRING_PROFILES_ACTIVE=cloud,on-demand
+      - SPRING_APPLICATION_NAME=hoover
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-service:8888
       - SERVER_PORT=8082
       - DOCKER_IP=$DOCKER_IP
-      - JAVA_OPTS=-Xmx512m -XX:+UseG1GC -XX:+UseStringDeduplication -Djava.security.egd=file:///dev/urandom -Xmx2G
+      - JAVA_OPTS=-XX:+UseG1GC -XX:+UseStringDeduplication -Djava.security.egd=file:///dev/urandom -Xmx2G
       - JAVA_ARTIFACTS_FETCH_MODE=obtain-jars-from-runtime-metadata
       - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus
       - MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED=true
@@ -77,11 +91,11 @@ services:
       - discovery-service
       - prometheus
     environment:
-      - SPRING_APPLICATION_NAME=cf-hoover-ui
-      - SPRING_PROFILES_ACTIVE=cloud,on-demand
+      - CF_BASE-URL=http://hoover
+      - SPRING_APPLICATION_NAME=hoover-ui
       - SERVER_PORT=8083
       - DOCKER_IP=$DOCKER_IP
-      - JAVA_OPTS=-Xmx512m -XX:+UseG1GC -XX:+UseStringDeduplication -Djava.security.egd=file:///dev/urandom -Xmx2G
+      - JAVA_OPTS=-XX:+UseG1GC -XX:+UseStringDeduplication -Djava.security.egd=file:///dev/urandom -Xmx2G
       - JAVA_ARTIFACTS_FETCH_MODE=obtain-jars-from-runtime-metadata
       - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus
       - MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED=true

@@ -26,7 +26,7 @@ while [ -z "$PROMTHEUS_READY" ]; do
 done
 
 # Start the config service second and wait for it to become available
-docker compose up -d hoover-config-service
+docker compose up -d config-service
 
 while [ -z "$CONFIG_SERVICE_READY" ]; do
   echo "Waiting for cf-hoover config service..."

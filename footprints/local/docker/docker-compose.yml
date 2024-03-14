@@ -53,7 +53,7 @@ services:
       - 3307:3306
     restart: always
     env_file:
-      - ./mysql/butler.env
+      - ./mysql/archivist.env
     volumes:
       - archivist-db-data:/var/lib/mysql
 
@@ -75,7 +75,7 @@ services:
       - 5052:80
     restart: always
     env_file:
-      - ./phpmyadmin/admin.env
+      - ./phpmyadmin/archivist.env
     links:
       - archivist-db
 
@@ -85,7 +85,7 @@ services:
       - 5050:80
     restart: always
     env_file:
-      - ./phpmyadmin/admin.env
+      - ./phpmyadmin/butler.env
     links:
       - butler-db
 
@@ -93,7 +93,7 @@ services:
   ## NEFLIX OSS, SUPPORT SERVICES
 
   ### CONFIGURATION MANAGEMENT
-  hoover-config-service:
+  config-service:
     image: cf-toolsuite/config-server
     links:
       - prometheus
@@ -149,6 +149,7 @@ services:
       - SPRING_JACKSON_SERIALIZATION_INDENT-OUTPUT=true
       - SPRING_APPLICATION_NAME=microservices-console
       - SPRING_CLOUD_DISCOVERY_ENABLED=true
+      - SPRING_CLOUD_CONFIG_ENABLED=false
       - JAVA_OPTS=-Xmx1g -XX:+UseG1GC -XX:+UseStringDeduplication
 
 volumes:
