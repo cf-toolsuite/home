@@ -18,7 +18,7 @@ if [ "$CLONE_PROJECTS" == "true" ]; then
   gh repo clone cf-toolsuite/cf-hoover
   gh repo clone cf-toolsuite/cf-hoover-ui
   gh repo clone cf-toolsuite/cf-archivist
-  gh repo clone cf-toosuite/home
+  gh repo clone cf-toolsuite/home
 fi
 
 echo "-- Building spring-boot-starter-runtime-metadata"
