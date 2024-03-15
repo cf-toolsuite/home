@@ -12,8 +12,8 @@
     <packaging>jar</packaging>
 
 
-    <name>Spring Boot Application Admin</name>
-    <description>Provides an overview of all running Spring Boot Micro Services in Grivet environment.</description>
+    <name>CF Toolsuite Application Admin</name>
+    <description>Provides an overview of all running Spring Boot Micro Services in cf-toolsuite environment.</description>
     <inceptionYear>2024</inceptionYear>
 
     <properties>

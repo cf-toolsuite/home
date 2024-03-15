@@ -18,7 +18,7 @@ cd docker
 docker compose up -d prometheus
 
 while [ -z "$PROMTHEUS_READY" ]; do
-  echo "Waiting for prometheus to becom healthy..."
+  echo "Waiting for prometheus to become healthy..."
   if [ "$(curl --silent "$DOCKER_IP":9090/-/healthy 2>&1 | grep -q 'Prometheus Server is Healthy'; echo $?)" = 0 ]; then
       PROMTHEUS_READY=true;
   fi

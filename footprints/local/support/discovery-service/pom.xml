@@ -11,7 +11,7 @@
     <artifactId>cf-toolsuite-discovery-service</artifactId>
     <packaging>jar</packaging>
 
-    <name>Grivet Discovery Service</name>
+    <name>CF Toolsuite Discovery Service</name>
     <description>This discovery service is powered by Eureka.  Eureka is a REST based service that is primarily used in the AWS cloud for locating services for the purpose of load balancing and fail-over of middle-tier servers.</description>
     <inceptionYear>2024</inceptionYear>
 

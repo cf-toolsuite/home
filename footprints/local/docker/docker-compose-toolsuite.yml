@@ -14,22 +14,19 @@ services:
       - 8080:8080
     env_file:
       - ./config/butler.env
-    links:
-      - prometheus
-      - butler-db
     environment:
+      - DOCKER_IP=$DOCKER_IP
+      - JAVA_ARTIFACTS_FETCH_MODE=obtain-jars-from-runtime-metadata
+      - JAVA_OPTS=-XX:+UseG1GC -XX:+UseStringDeduplication -Djava.security.egd=file:///dev/urandom -Xmx3G -XX:MaxDirectMemorySize=1G
       - SPRING_APPLICATION_NAME=butler
       - SPRING_PROFILES_ACTIVE=on-demand
       - SPRING_R2DBC_URL=r2dbc:mysql://butler-db:3306/cf-butler
       - SPRING_R2DBC_USERNAME=dbadmin
       - SPRING_R2DBC_PASSWORD=thunderb0lt!
-      - DOCKER_IP=$DOCKER_IP
-      - JAVA_OPTS=-XX:+UseG1GC -XX:+UseStringDeduplication -Djava.security.egd=file:///dev/urandom -Xmx3G -XX:MaxDirectMemorySize=1G
-      - JAVA_ARTIFACTS_FETCH_MODE=obtain-jars-from-runtime-metadata
-      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus
       - MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED=true
       - MANAGEMENT_ENDPOINT_HEALTH_SHOW-DETAILS=always
       - MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED=true
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus
 
   archivist:
     image: cf-toolsuite/cf-archivist
@@ -37,67 +34,62 @@ services:
       - 8081:8081
     env_file:
       - ./config/archivist.env
-    links:
-      - archivist-db
-      - discovery-service
-      - prometheus
     environment:
-      - CF_BASE-URL=http://hoover
+      - CF_BASE-URL=https://hoover
+      - EUREKA_INSTANCE_PREFER-IP-ADDRESS=true
+      - EUREKA_CLIENT_REGISTER-WITH-EUREKA=true
+      - EUREKA_CLIENT_FETCH-REGISTRY=true
+      - EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE=http://discovery-service:8761/eureka/
+      - SERVER_PORT=8081
       - SPRING_APPLICATION_NAME=archivist
+      - SPRING_CLOUD_DISCOVERY_ENABLED=true
       - SPRING_PROFILES_ACTIVE=on-demand
       - SPRING_R2DBC_URL=r2dbc:mysql://archivist-db:3306/cf-archivist
       - SPRING_R2DBC_USERNAME=dbadmin
       - SPRING_R2DBC_PASSWORD=thunderb0lt!
-      - SERVER_PORT=8081
       - DOCKER_IP=$DOCKER_IP
       - JAVA_OPTS=-XX:+UseG1GC -XX:+UseStringDeduplication -Djava.security.egd=file:///dev/urandom -Xmx2G
       - JAVA_ARTIFACTS_FETCH_MODE=obtain-jars-from-runtime-metadata
-      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus
       - MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED=true
       - MANAGEMENT_ENDPOINT_HEALTH_SHOW-DETAILS=always
       - MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED=true
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 3s
-        max_attempts: 5
-        window: 60s
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus
 
   hoover:
     image: cf-toolsuite/cf-hoover
     ports:
       - 8082:8082
-    links:
-      - config-service
-      - discovery-service
-      - prometheus
     environment:
-      - SPRING_APPLICATION_NAME=hoover
-      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-service:8888
-      - SERVER_PORT=8082
       - DOCKER_IP=$DOCKER_IP
+      - EUREKA_CLIENT_REGISTER-WITH-EUREKA=true
+      - EUREKA_CLIENT_FETCH-REGISTRY=true
+      - EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE=http://discovery-service:8761/eureka/
       - JAVA_OPTS=-XX:+UseG1GC -XX:+UseStringDeduplication -Djava.security.egd=file:///dev/urandom -Xmx2G
-      - JAVA_ARTIFACTS_FETCH_MODE=obtain-jars-from-runtime-metadata
-      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus
       - MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED=true
       - MANAGEMENT_ENDPOINT_HEALTH_SHOW-DETAILS=always
       - MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED=true
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus
+      - SERVER_PORT=8082
+      - SPRING_APPLICATION_NAME=hoover
+      - SPRING_CLOUD_DISCOVERY_ENABLED=true
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-service:8888
 
   hoover-ui:
     image: cf-toolsuite/cf-hoover-ui
     ports:
       - 8083:8083
-    links:
-      - discovery-service
-      - prometheus
     environment:
-      - CF_BASE-URL=http://hoover
-      - SPRING_APPLICATION_NAME=hoover-ui
-      - SERVER_PORT=8083
+      - CF_BASE-URL=https://hoover
       - DOCKER_IP=$DOCKER_IP
+      - EUREKA_INSTANCE_PREFER-IP-ADDRESS=true
+      - EUREKA_CLIENT_REGISTER-WITH-EUREKA=true
+      - EUREKA_CLIENT_FETCH-REGISTRY=true
+      - EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE=http://discovery-service:8761/eureka/
       - JAVA_OPTS=-XX:+UseG1GC -XX:+UseStringDeduplication -Djava.security.egd=file:///dev/urandom -Xmx2G
-      - JAVA_ARTIFACTS_FETCH_MODE=obtain-jars-from-runtime-metadata
-      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus
+      - SERVER_PORT=8083
+      - SPRING_APPLICATION_NAME=hoover-ui
+      - SPRING_CLOUD_DISCOVERY_ENABLED=true
       - MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED=true
       - MANAGEMENT_ENDPOINT_HEALTH_SHOW-DETAILS=always
       - MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED=true
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus
