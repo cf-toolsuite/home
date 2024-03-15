@@ -30,6 +30,7 @@ The home for ideas and exploration.  Mainly documentation, videos and discussion
 * [http](https://httpie.io/)
 * [jq](https://github.com/jqlang/jq)
 * [pack](https://github.com/buildpacks/pack)
+* [sdk](http://sdkman.io)
 
 ### How to
 
