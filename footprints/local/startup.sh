@@ -29,7 +29,7 @@ done
 docker compose up -d config-service
 
 while [ -z "$CONFIG_SERVICE_READY" ]; do
-  echo "Waiting for cf-hoover config service..."
+  echo "Waiting for cf-hoover config service to become healthy..."
   if [ "$(curl --silent "$DOCKER_IP":8888/actuator/health 2>&1 | grep -q '\"status\":\"UP\"'; echo $?)" = 0 ]; then
       CONFIG_SERVICE_READY=true;
   fi
@@ -40,14 +40,39 @@ done
 docker compose up -d discovery-service
 
 while [ -z "$DISCOVERY_SERVICE_READY" ]; do
-  echo "Waiting for discovery service..."
+  echo "Waiting for discovery service to become healthy..."
   if [ "$(curl --silent "$DOCKER_IP":8761/actuator/health 2>&1 | grep -q '\"status\":\"UP\"'; echo $?)" = 0 ]; then
       DISCOVERY_SERVICE_READY=true;
   fi
   sleep 5
 done
 
-# Start the other containers
+# Start remaining infra services
+docker compose up -d
+
+# Start butler and wait
+docker compose -f docker-compose.yml -f docker-compose-"$suffix.yml" up -d butler
+
+while [ -z "$BUTLER_READY" ]; do
+  echo "Waiting for cf-butler to become healthy..."
+  if [ "$(curl --silent "$DOCKER_IP":8080/actuator/health 2>&1 | grep -q '\"status\":\"UP\"'; echo $?)" = 0 ]; then
+      BUTLER_READY=true;
+  fi
+  sleep 5
+done
+
+# Start hoover and wait
+docker compose -f docker-compose.yml -f docker-compose-"$suffix.yml" up -d hoover
+
+while [ -z "$HOOVER_READY" ]; do
+  echo "Waiting for cf-hoover to become healthy..."
+  if [ "$(curl --silent "$DOCKER_IP":8082/actuator/health 2>&1 | grep -q '\"status\":\"UP\"'; echo $?)" = 0 ]; then
+      HOOVER_READY=true;
+  fi
+  sleep 5
+done
+
+# Start the remaining cf-toolsuite services
 docker compose -f docker-compose.yml -f docker-compose-"$suffix.yml" up -d
 
 cd ..

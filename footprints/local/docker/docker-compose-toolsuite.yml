@@ -1,8 +1,4 @@
 # DOCKER COMPOSE CONFIGURATION
-# This file uses the version 3 docker-compose file format, described here:
-# https://docs.docker.com/compose/compose-file/compose-file-v3/#compose-file-structure-and-examples
-
-version: '3.8'
 
 services:
 
@@ -36,10 +32,18 @@ services:
       - ./config/archivist.env
     environment:
       - CF_BASE-URL=https://hoover
+      - DOCKER_IP=$DOCKER_IP
       - EUREKA_INSTANCE_PREFER-IP-ADDRESS=true
       - EUREKA_CLIENT_REGISTER-WITH-EUREKA=true
       - EUREKA_CLIENT_FETCH-REGISTRY=true
       - EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE=http://discovery-service:8761/eureka/
+      - EUREKA_CLIENT_HEALTHCHECK_ENABLED=true
+      - JAVA_OPTS=-XX:+UseG1GC -XX:+UseStringDeduplication -Djava.security.egd=file:///dev/urandom -Xmx2G
+      - JAVA_ARTIFACTS_FETCH_MODE=obtain-jars-from-runtime-metadata
+      - MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED=true
+      - MANAGEMENT_ENDPOINT_HEALTH_SHOW-DETAILS=always
+      - MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED=true
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus
       - SERVER_PORT=8081
       - SPRING_APPLICATION_NAME=archivist
       - SPRING_CLOUD_DISCOVERY_ENABLED=true
@@ -47,13 +51,6 @@ services:
       - SPRING_R2DBC_URL=r2dbc:mysql://archivist-db:3306/cf-archivist
       - SPRING_R2DBC_USERNAME=dbadmin
       - SPRING_R2DBC_PASSWORD=thunderb0lt!
-      - DOCKER_IP=$DOCKER_IP
-      - JAVA_OPTS=-XX:+UseG1GC -XX:+UseStringDeduplication -Djava.security.egd=file:///dev/urandom -Xmx2G
-      - JAVA_ARTIFACTS_FETCH_MODE=obtain-jars-from-runtime-metadata
-      - MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED=true
-      - MANAGEMENT_ENDPOINT_HEALTH_SHOW-DETAILS=always
-      - MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED=true
-      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus
 
   hoover:
     image: cf-toolsuite/cf-hoover
@@ -61,9 +58,11 @@ services:
       - 8082:8082
     environment:
       - DOCKER_IP=$DOCKER_IP
+      - EUREKA_INSTANCE_PREFER-IP-ADDRESS=true
       - EUREKA_CLIENT_REGISTER-WITH-EUREKA=true
       - EUREKA_CLIENT_FETCH-REGISTRY=true
       - EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE=http://discovery-service:8761/eureka/
+      - EUREKA_CLIENT_HEALTHCHECK_ENABLED=true
       - JAVA_OPTS=-XX:+UseG1GC -XX:+UseStringDeduplication -Djava.security.egd=file:///dev/urandom -Xmx2G
       - MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED=true
       - MANAGEMENT_ENDPOINT_HEALTH_SHOW-DETAILS=always
@@ -85,6 +84,7 @@ services:
       - EUREKA_CLIENT_REGISTER-WITH-EUREKA=true
       - EUREKA_CLIENT_FETCH-REGISTRY=true
       - EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE=http://discovery-service:8761/eureka/
+      - EUREKA_CLIENT_HEALTHCHECK_ENABLED=true
       - JAVA_OPTS=-XX:+UseG1GC -XX:+UseStringDeduplication -Djava.security.egd=file:///dev/urandom -Xmx2G
       - SERVER_PORT=8083
       - SPRING_APPLICATION_NAME=hoover-ui

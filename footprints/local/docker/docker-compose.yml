@@ -1,8 +1,4 @@
 # DOCKER COMPOSE CONFIGURATION
-# This file uses the version 3 docker-compose file format, described here:
-# https://docs.docker.com/compose/compose-file/compose-file-v3/#compose-file-structure-and-examples
-
-version: '3.8'
 
 services:
 
@@ -118,9 +114,11 @@ services:
       - 5555:5555
     environment:
       - DOCKER_IP=$DOCKER_IP
+      - EUREKA_INSTANCE_PREFER-IP-ADDRESS=true
       - EUREKA_CLIENT_REGISTER-WITH-EUREKA=true
       - EUREKA_CLIENT_FETCH-REGISTRY=true
       - EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE=http://discovery-service:8761/eureka/
+      - EUREKA_CLIENT_HEALTHCHECK_ENABLED=true
       - JAVA_OPTS=-Xmx1g -XX:+UseG1GC -XX:+UseStringDeduplication
       - MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED=true
       - MANAGEMENT_ENDPOINT_HEALTH_SHOW-DETAILS=always
