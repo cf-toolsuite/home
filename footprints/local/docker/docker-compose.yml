@@ -74,7 +74,7 @@ services:
 
   ### CONFIGURATION MANAGEMENT
   config-service:
-    image: cf-toolsuite/config-server
+    image: cftoolsuite/config-server
     ports:
       - 8888:8888
     environment:
@@ -92,7 +92,7 @@ services:
 
   ### EUREKA, DISCOVERY
   discovery-service:
-    image: cf-toolsuite/discovery-service
+    image: cftoolsuite/discovery-service
     ports:
       - 8761:8761
     environment:
@@ -109,7 +109,7 @@ services:
 
   ## SPRING BOOT SERVICE ADMINISTRATION
   springboot-admin:
-    image: cf-toolsuite/microservices-console
+    image: cftoolsuite/microservices-console
     ports:
       - 5555:5555
     environment:

@@ -31,7 +31,7 @@ echo "-- Building container images"
 
 if [ "$MODE" == "butler-only" ] || [ "$MODE" == "full-install" ]; then
   cd cf-butler
-  pack build cf-toolsuite/cf-butler \
+  pack build cftoolsuite/cf-butler \
     --path . \
     --env BP_MAVEN_ACTIVE_PROFILES=mysql,expose-runtime-metadata \
     --env BP_JVM_VERSION=21.* \
@@ -42,7 +42,7 @@ fi
 
 if [ "$MODE" == "hoover-only" ] || [ "$MODE" == "full-install" ]; then
   cd cf-hoover
-  pack build cf-toolsuite/cf-hoover \
+  pack build cftoolsuite/cf-hoover \
     --path . \
     --env BP_MAVEN_ACTIVE_PROFILES=expose-runtime-metadata \
     --env BP_JVM_VERSION=21.* \
@@ -53,7 +53,7 @@ fi
 
 if [ "$MODE" == "hoover-only" ] || [ "$MODE" == "full-install" ]; then
   cd cf-hoover-ui
-  pack build cf-toolsuite/cf-hoover-ui \
+  pack build cftoolsuite/cf-hoover-ui \
     --path . \
     --env BP_MAVEN_BUILD_ARGUMENTS="clean verify --batch-mode -DskipTests" \
     --env BP_MAVEN_ACTIVE_PROFILES=production,expose-runtime-metadata \
@@ -65,7 +65,7 @@ fi
 
 if [ "$MODE" == "archivist-only" ] || [ "$MODE" == "full-install" ]; then
   cd cf-archivist
-  pack build cf-toolsuite/cf-archivist \
+  pack build cftoolsuite/cf-archivist \
     --path . \
     --env BP_MAVEN_BUILD_ARGUMENTS="clean verify --batch-mode -DskipTests" \
     --env BP_MAVEN_ACTIVE_PROFILES=mysql,production,expose-runtime-metadata \
@@ -81,7 +81,7 @@ cd ../../../../
 
 if [ "$MODE" == "support-only" ] || [ "$MODE" == "full-install" ]; then
   cd home/footprints/local/support/config-server
-  pack build cf-toolsuite/config-server \
+  pack build cftoolsuite/config-server \
     --path . \
     --env BP_JVM_VERSION=21.* \
     --builder paketobuildpacks/builder-jammy-full \
@@ -91,7 +91,7 @@ fi
 
 if [ "$MODE" == "support-only" ] || [ "$MODE" == "full-install" ]; then
   cd home/footprints/local/support/discovery-service
-  pack build cf-toolsuite/discovery-service \
+  pack build cftoolsuite/discovery-service \
     --path . \
     --env BP_JVM_VERSION=21.* \
     --builder paketobuildpacks/builder-jammy-full \
@@ -101,7 +101,7 @@ fi
 
 if [ "$MODE" == "support-only" ] || [ "$MODE" == "full-install" ]; then
   cd home/footprints/local/support/microservices-console
-  pack build cf-toolsuite/microservices-console \
+  pack build cftoolsuite/microservices-console \
     --path . \
     --env BP_JVM_VERSION=21.* \
     --builder paketobuildpacks/builder-jammy-full \

@@ -5,7 +5,7 @@ services:
   ## TOOLSUITE SERVICES
 
   butler:
-    image: cf-toolsuite/cf-butler
+    image: cftoolsuite/cf-butler
     ports:
       - 8080:8080
     env_file:
@@ -25,7 +25,7 @@ services:
       - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus
 
   archivist:
-    image: cf-toolsuite/cf-archivist
+    image: cftoolsuite/cf-archivist
     ports:
       - 8081:8081
     env_file:
@@ -53,7 +53,7 @@ services:
       - SPRING_R2DBC_PASSWORD=thunderb0lt!
 
   hoover:
-    image: cf-toolsuite/cf-hoover
+    image: cftoolsuite/cf-hoover
     ports:
       - 8082:8082
     environment:
@@ -74,7 +74,7 @@ services:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config-service:8888
 
   hoover-ui:
-    image: cf-toolsuite/cf-hoover-ui
+    image: cftoolsuite/cf-hoover-ui
     ports:
       - 8083:8083
     environment:

@@ -7,8 +7,9 @@ set -e
 
 CLONE_PROJECTS="${1:-false}"
 MODE="${2:-full-install}"
-DOCKER_USERNAME="${3}"
-DOCKER_PASSWORD="${4}"
+DOCKER_HOST="${3:-docker.io}"
+DOCKER_USERNAME="${4:-cftoolsuite}"
+DOCKER_PASSWORD="${5}"
 IMAGE_TAG=$(date '+%Y.%m.%d')
 
 cd /tmp
@@ -29,15 +30,15 @@ cd spring-boot-starter-runtime-metadata
 ./mvnw clean install
 cd ..
 
-echo "-- Authenticating (ghcr.io)"
+echo "-- Authenticating (${DOCKER_HOST})"
 
-docker login ghcr.io -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
+docker login ${DOCKER_HOST} -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
 
 echo "-- Building and publishing container images"
 
 if [ "$MODE" == "butler-only" ] || [ "$MODE" == "full-install" ]; then
   cd cf-butler
-  pack build ghcr.io/cf-toolsuite/cf-butler:$IMAGE_TAG \
+  pack build ${DOCKER_HOST}/cftoolsuite/cf-butler:$IMAGE_TAG \
     --path . \
     --env BP_MAVEN_ACTIVE_PROFILES=mysql,expose-runtime-metadata \
     --env BP_JVM_VERSION=21.* \
@@ -49,7 +50,7 @@ fi
 
 if [ "$MODE" == "hoover-only" ] || [ "$MODE" == "full-install" ]; then
   cd cf-hoover
-  pack build ghcr.io/cf-toolsuite/cf-hoover:$IMAGE_TAG \
+  pack build ${DOCKER_HOST}/cftoolsuite/cf-hoover:$IMAGE_TAG \
     --path . \
     --env BP_MAVEN_ACTIVE_PROFILES=expose-runtime-metadata \
     --env BP_JVM_VERSION=21.* \
@@ -61,7 +62,7 @@ fi
 
 if [ "$MODE" == "hoover-only" ] || [ "$MODE" == "full-install" ]; then
   cd cf-hoover-ui
-  pack build ghcr.io/cf-toolsuite/cf-hoover-ui:$IMAGE_TAG \
+  pack build ${DOCKER_HOST}/cftoolsuite/cf-hoover-ui:$IMAGE_TAG \
     --path . \
     --env BP_MAVEN_BUILD_ARGUMENTS="clean verify --batch-mode -DskipTests" \
     --env BP_MAVEN_ACTIVE_PROFILES=production,expose-runtime-metadata \
@@ -74,7 +75,7 @@ fi
 
 if [ "$MODE" == "archivist-only" ] || [ "$MODE" == "full-install" ]; then
   cd cf-archivist
-  pack build ghcr.io/cf-toolsuite/cf-archivist:$IMAGE_TAG \
+  pack build ${DOCKER_HOST}/cftoolsuite/cf-archivist:$IMAGE_TAG \
     --path . \
     --env BP_MAVEN_BUILD_ARGUMENTS="clean verify --batch-mode -DskipTests" \
     --env BP_MAVEN_ACTIVE_PROFILES=mysql,production,expose-runtime-metadata \
@@ -91,7 +92,7 @@ cd ../../../../
 
 if [ "$MODE" == "support-only" ] || [ "$MODE" == "full-install" ]; then
   cd home/footprints/local/support/config-server
-  pack build ghcr.io/cf-toolsuite/config-server:$IMAGE_TAG \
+  pack build ${DOCKER_HOST}/cftoolsuite/config-server:$IMAGE_TAG \
     --path . \
     --env BP_JVM_VERSION=21.* \
     --builder paketobuildpacks/builder-jammy-full \
@@ -102,7 +103,7 @@ fi
 
 if [ "$MODE" == "support-only" ] || [ "$MODE" == "full-install" ]; then
   cd home/footprints/local/support/discovery-service
-  pack build ghcr.io/cf-toolsuite/discovery-service:$IMAGE_TAG \
+  pack build ${DOCKER_HOST}/cftoolsuite/discovery-service:$IMAGE_TAG \
     --path . \
     --env BP_JVM_VERSION=21.* \
     --builder paketobuildpacks/builder-jammy-full \
@@ -113,7 +114,7 @@ fi
 
 if [ "$MODE" == "support-only" ] || [ "$MODE" == "full-install" ]; then
   cd home/footprints/local/support/microservices-console
-  pack build ghcr.io/cf-toolsuite/microservices-console:$IMAGE_TAG \
+  pack build ${DOCKER_HOST}/cftoolsuite/microservices-console:$IMAGE_TAG \
     --path . \
     --env BP_JVM_VERSION=21.* \
     --builder paketobuildpacks/builder-jammy-full \

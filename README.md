@@ -12,8 +12,8 @@ The home for ideas and exploration.  Mainly documentation, videos and discussion
   * [cf-hoover](https://github.com/cf-toolsuite/cf-hoover/packages/809701)
   * [cf-hoover-ui](https://github.com/cf-toolsuite/cf-hoover-ui/packages/809727)
   * [spring-boot-starter-runtime-meta-data](https://github.com/cf-toolsuite/spring-boot-starter-runtime-metadata/packages/2099270)
-* Container images on [Docker Hub](https://hub.docker.com/)
-  * (coming soon)
+
+* Container images on [Docker Hub](https://hub.docker.com/repositories/cftoolsuite)
 
 ### Prerequisites
 
