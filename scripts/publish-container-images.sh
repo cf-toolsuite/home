@@ -39,6 +39,7 @@ echo "-- Building and publishing container images"
 if [ "$MODE" == "butler-only" ] || [ "$MODE" == "full-install" ]; then
   cd cf-butler
   pack build ${DOCKER_HOST}/cftoolsuite/cf-butler:$IMAGE_TAG \
+    --tag ${DOCKER_HOST}/cftoolsuite/cf-butler:latest \
     --path . \
     --env BP_MAVEN_ACTIVE_PROFILES=mysql,expose-runtime-metadata \
     --env BP_JVM_VERSION=21.* \
@@ -51,6 +52,7 @@ fi
 if [ "$MODE" == "hoover-only" ] || [ "$MODE" == "full-install" ]; then
   cd cf-hoover
   pack build ${DOCKER_HOST}/cftoolsuite/cf-hoover:$IMAGE_TAG \
+    --tag ${DOCKER_HOST}/cftoolsuite/cf-butler:latest \
     --path . \
     --env BP_MAVEN_ACTIVE_PROFILES=expose-runtime-metadata \
     --env BP_JVM_VERSION=21.* \
@@ -63,6 +65,7 @@ fi
 if [ "$MODE" == "hoover-only" ] || [ "$MODE" == "full-install" ]; then
   cd cf-hoover-ui
   pack build ${DOCKER_HOST}/cftoolsuite/cf-hoover-ui:$IMAGE_TAG \
+    --tag ${DOCKER_HOST}/cftoolsuite/cf-butler:latest \
     --path . \
     --env BP_MAVEN_BUILD_ARGUMENTS="clean verify --batch-mode -DskipTests" \
     --env BP_MAVEN_ACTIVE_PROFILES=production,expose-runtime-metadata \
@@ -76,6 +79,7 @@ fi
 if [ "$MODE" == "archivist-only" ] || [ "$MODE" == "full-install" ]; then
   cd cf-archivist
   pack build ${DOCKER_HOST}/cftoolsuite/cf-archivist:$IMAGE_TAG \
+    --tag ${DOCKER_HOST}/cftoolsuite/cf-butler:latest \
     --path . \
     --env BP_MAVEN_BUILD_ARGUMENTS="clean verify --batch-mode -DskipTests" \
     --env BP_MAVEN_ACTIVE_PROFILES=mysql,production,expose-runtime-metadata \
@@ -93,6 +97,7 @@ cd ../../../../
 if [ "$MODE" == "support-only" ] || [ "$MODE" == "full-install" ]; then
   cd home/footprints/local/support/config-server
   pack build ${DOCKER_HOST}/cftoolsuite/config-server:$IMAGE_TAG \
+    --tag ${DOCKER_HOST}/cftoolsuite/cf-butler:latest \
     --path . \
     --env BP_JVM_VERSION=21.* \
     --builder paketobuildpacks/builder-jammy-full \
@@ -104,6 +109,7 @@ fi
 if [ "$MODE" == "support-only" ] || [ "$MODE" == "full-install" ]; then
   cd home/footprints/local/support/discovery-service
   pack build ${DOCKER_HOST}/cftoolsuite/discovery-service:$IMAGE_TAG \
+    --tag ${DOCKER_HOST}/cftoolsuite/cf-butler:latest \
     --path . \
     --env BP_JVM_VERSION=21.* \
     --builder paketobuildpacks/builder-jammy-full \
@@ -115,6 +121,7 @@ fi
 if [ "$MODE" == "support-only" ] || [ "$MODE" == "full-install" ]; then
   cd home/footprints/local/support/microservices-console
   pack build ${DOCKER_HOST}/cftoolsuite/microservices-console:$IMAGE_TAG \
+    --tag ${DOCKER_HOST}/cftoolsuite/cf-butler:latest \
     --path . \
     --env BP_JVM_VERSION=21.* \
     --builder paketobuildpacks/builder-jammy-full \
