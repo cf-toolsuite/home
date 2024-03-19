@@ -36,6 +36,8 @@ The home for ideas and exploration.  Mainly documentation, videos and discussion
 
 #### On Tanzu Application Service
 
+You'll need to author two configuration files named `secrets.cf-butler.{foundation}.json` and `secrets.cf-archivist.{foundation}.json` and place them in the `/tmp/config` directory.  Crib from the samples in [footprints/tas/config](footprints/tas/config).
+
 * [Install](scripts/e2e-install.sh)
 * [Uninstall](scripts/e2e-uninstall.sh)
 * [Expose curated set of Spring Boot Actuator endpoints](scripts/expose-actuator-endpoints.sh)
@@ -45,7 +47,7 @@ The home for ideas and exploration.  Mainly documentation, videos and discussion
 
 #### With Docker Compose
 
-You'll need to author `butler.env` and `archivist.env` files underneath [footprints/local/docker](footprints/local/docker)/config.  Crib from the `*.sample` files.
+You'll need to author two configuration files named `butler.env` and `archivist.env` underneath [footprints/local/docker/config](footprints/local/docker/config).  Crib from the `*.sample` files.
 
 * [Build container images](scripts/build-container-images.sh)
 * [Startup](footprints/local/startup.sh)
