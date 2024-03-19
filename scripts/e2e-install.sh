@@ -36,6 +36,7 @@ echo "-- Verify required configuration files exist"
 
 if [ ! -e "/tmp/config/secrets.cf-butler.$SUFFIX.json" ] || [ ! -e "/tmp/config/secrets.cf-archivist.$SUFFIX.json" ]; then
   echo "Required configuration files missing!  Please place secrets.cf-butler.$SUFFIX.json and secrets.cf-archivist.$SUFFIX.json inside the /tmp/config directory.  Then attempt to re-run this script."
+  echo "If you haven't created these files yet, look in the samples directory for inspiration."
   exit 1
 fi
 
