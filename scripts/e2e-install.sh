@@ -137,13 +137,13 @@ if [ "$MODE" == "hoover-only" ] || [ "$MODE" == "full-install" ]; then
   # Extract the owner from the repository URL
   owner=$(echo "$repository_url" | cut -d'/' -f4)
   sed -i "s/cf-toolsuite/$owner/g" "config/config-server.json"
-  ./deploy.with-registry.sh
+  ./scripts/deploy.with-registry.sh
   cd ..
 fi
 
 if [ "$MODE" == "hoover-only" ] || [ "$MODE" == "full-install" ]; then
   cd cf-hoover-ui
-  ./deploy.sh
+  ./scripts/deploy.sh
   cd ..
 fi
 
