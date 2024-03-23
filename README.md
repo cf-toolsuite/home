@@ -4,6 +4,13 @@ The home for ideas and exploration.  Mainly documentation, videos and discussion
 
 ## Resources
 
+### Documentation
+
+* [Background](docs/Background%20on%20cf-toolsuite.pdf)
+* Evaluating
+  * [Locally](docs/Evaluating%20cf-toolsuite%20locally.pdf)
+  * [on Tanzu Application Service](docs/Evaluating%20cf-toolsuite%20on%20TAS.pdf)
+
 ### Pre-built artifacts
 
 * `.jar` files

@@ -77,6 +77,8 @@ services:
     image: cftoolsuite/config-server
     ports:
       - 8888:8888
+    env_file:
+      - ./config/hoover-config.env
     environment:
       - DOCKER_IP=$DOCKER_IP
       - EUREKA_CLIENT_REGISTER_WITH_EUREKA=false
@@ -87,8 +89,6 @@ services:
       - MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED=true
       - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus
       - SERVER_PORT=8888
-      - SPRING_CLOUD_CONFIG_SERVER_GIT_URI=https://github.com/pacphi/cf-hoover-config
-      - SPRING_CLOUD_CONFIG_SERVER_GIT_DEFAULT-LABEL=main
 
   ### EUREKA, DISCOVERY
   discovery-service:
