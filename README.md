@@ -24,11 +24,16 @@ The home for ideas and exploration.  Mainly documentation, videos and discussion
 
 ### Prerequisites
 
-* CF API endpoint and admin credentials to a Tanzu Application Service foundation
+#### Required
+
+* CF API endpoint and admin credentials to a Cloud Foundry foundation (e.g., Tanzu Application Service)
+
+##### Optional
+
 * Operations Manager admin credentials
 * VMware Tanzu Network API token
 
-#### Tools
+#### Toolset
 
 * [gh](https://cli.github.com/)
 * [git](https://git-scm.com/downloads)
