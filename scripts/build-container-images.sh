@@ -13,19 +13,12 @@ cd /tmp
 
 if [ "$CLONE_PROJECTS" == "true" ]; then
   echo "-- Cloning Github repositories"
-  gh repo clone cf-toolsuite/spring-boot-starter-runtime-metadata
   gh repo clone cf-toolsuite/cf-butler
   gh repo clone cf-toolsuite/cf-hoover
   gh repo clone cf-toolsuite/cf-hoover-ui
   gh repo clone cf-toolsuite/cf-archivist
   gh repo clone cf-toolsuite/home
 fi
-
-echo "-- Building spring-boot-starter-runtime-metadata"
-
-cd spring-boot-starter-runtime-metadata
-./mvnw clean install
-cd ..
 
 echo "-- Building container images"
 
@@ -43,6 +36,7 @@ fi
 if [ "$MODE" == "hoover-only" ] || [ "$MODE" == "full-install" ]; then
   cd cf-hoover
   pack build cftoolsuite/cf-hoover \
+    --env BP_NATIVE_IMAGE=true \
     --path . \
     --env BP_MAVEN_ACTIVE_PROFILES=expose-runtime-metadata \
     --env BP_JVM_VERSION=21.* \
@@ -54,6 +48,7 @@ fi
 if [ "$MODE" == "hoover-only" ] || [ "$MODE" == "full-install" ]; then
   cd cf-hoover-ui
   pack build cftoolsuite/cf-hoover-ui \
+    --env BP_NATIVE_IMAGE=true \
     --path . \
     --env BP_MAVEN_BUILD_ARGUMENTS="clean verify --batch-mode -DskipTests" \
     --env BP_MAVEN_ACTIVE_PROFILES=production,expose-runtime-metadata \

@@ -79,7 +79,6 @@ cd /tmp
 
 if [ "$CLONE_PROJECTS" == "true" ]; then
   echo "-- Cloning Github repositories"
-  gh repo clone cf-toolsuite/spring-boot-starter-runtime-metadata
   gh repo clone cf-toolsuite/cf-butler
   gh repo fork cf-toolsuite/cf-butler-sample-config --fork-name cf-butler-config --clone --remote
   gh repo clone cf-toolsuite/cf-hoover
@@ -90,11 +89,7 @@ if [ "$CLONE_PROJECTS" == "true" ]; then
 fi
 
 if [ "$BUILD_PROJECTS" == "true" ]; then
-  echo "-- Building library and applications"
-
-  cd spring-boot-starter-runtime-metadata
-  ./mvnw clean install
-  cd ..
+  echo "-- Building applications"
 
   if [ "$MODE" == "butler-only" ] || [ "$MODE" == "full-install" ]; then
     cd cf-butler

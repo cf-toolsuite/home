@@ -16,19 +16,12 @@ cd /tmp
 
 if [ "$CLONE_PROJECTS" == "true" ]; then
   echo "-- Cloning Github repositories"
-  gh repo clone cf-toolsuite/spring-boot-starter-runtime-metadata
   gh repo clone cf-toolsuite/cf-butler
   gh repo clone cf-toolsuite/cf-hoover
   gh repo clone cf-toolsuite/cf-hoover-ui
   gh repo clone cf-toolsuite/cf-archivist
   gh repo clone cf-toolsuite/home
 fi
-
-echo "-- Building spring-boot-starter-runtime-metadata"
-
-cd spring-boot-starter-runtime-metadata
-./mvnw clean install
-cd ..
 
 echo "-- Authenticating (${DOCKER_HOST})"
 
