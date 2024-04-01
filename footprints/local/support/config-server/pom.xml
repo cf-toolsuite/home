@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.pivotal.cfapp.support</groupId>
+        <groupId>org.cftoolsuite.cfapp.support</groupId>
         <artifactId>cf-toolsuite-support-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>

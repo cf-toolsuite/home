@@ -3,7 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.pivotal.cfapp.support</groupId>
+    <groupId>org.cftoolsuite.cfapp.support</groupId>
     <artifactId>cf-toolsuite-support-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -27,7 +27,7 @@
         <developer>
             <id>cphillipson</id>
             <name>Chris Phillipson</name>
-            <email>cphillipson@pivotal.io</email>
+            <email>cphillipson@cftoolsuite.org</email>
             <url>https://pivotal.io</url>
             <roles>
                 <role>architect</role>
@@ -111,8 +111,8 @@
                 <version>4.3</version>
                 <configuration>
                     <properties>
-                        <owner>io.pivotal.cf-butler</owner>
-                        <email>cphillipson@pivotal.io</email>
+                        <owner>org.cftoolsuite.cfapp.support</owner>
+                        <email>cphillipson@cftoolsuite.org</email>
                     </properties>
                     <licenseSets>
                         <licenseSet>
@@ -307,7 +307,7 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-                <version>2023.0.0</version>
+                <version>2023.0.1</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
