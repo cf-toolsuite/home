@@ -1,11 +1,14 @@
-package io.pivotal.cfapp.support.config;
+package org.cftoolsuite.cfapp.support.console;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.config.server.EnableConfigServer;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+
+import de.codecentric.boot.admin.server.config.EnableAdminServer;
 
 @SpringBootApplication
-@EnableConfigServer
+@EnableAdminServer
+@EnableDiscoveryClient
 public class App {
 
 	public static void main(String[] args) {
