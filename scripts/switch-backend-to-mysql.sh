@@ -15,8 +15,36 @@ set -e
 ORG_HOME=observability
 SPACE_HOME=cf-toolsuite
 
+function determine_jar_release() {
+  local date_pattern='[0-9]{4}\.[0-9]{2}\.[0-9]{2}'
+  local date=""
+  local current_date=""
+
+  for file in target/*.jar; do
+    if [[ $file =~ $date_pattern ]]; then
+      current_date="${BASH_REMATCH[0]}"
+      if [[ -z $date ]]; then
+        date="$current_date"
+      elif [[ $date != "$current_date" ]]; then
+        echo "Varying dates found."
+        return 1
+      fi
+    else
+      echo "No matching date found in: $file"
+      return 1
+    fi
+  done
+
+  if [[ -n $date ]]; then
+    echo $date
+  else
+    echo "No files with the expected date pattern found."
+    return 1
+  fi
+}
+
 if [ -z "$1" ] && [ -z "$2" ]; then
-	echo "Usage: switch-backend-to-mysql.sh {cf-api} {cf-admin-username} {cf-admin-password} {application-name} {application-version} {mysql-service-plan} {path/to/application/source}"
+	echo "Usage: switch-backend-to-mysql.sh {cf-api} {cf-admin-username} {cf-admin-password} {application-name} {application-version} {mysql-service-plan} {path/to/application/source} {build-project}"
 	exit 1
 fi
 
@@ -31,6 +59,7 @@ APP_NAME="${4:-cf-butler}"
 APP_VERSION="${5:-1.0-SNAPSHOT}"
 MYSQL_SERVICE_PLAN="${6:-db-medium-80}"
 PATH_TO_SRC="${7:-/tmp/$APP_NAME}"
+BUILD_PROJECT="${8:-true}"
 
 
 echo "-- Setting API endpoint for target foundation"
@@ -69,7 +98,14 @@ echo "-- Rebuilding source with correct provider dependency"
 
 cd $PATH_TO_SRC
 
-./mvnw clean package -Pmysql,expose-runtime-metadata
+if [ "$BUILD_PROJECT" == "true" ]; then
+  ./mvnw clean package -Pmysql,expose-runtime-metadata
+else
+  echo "+- Fetching latest available $APP_NAME artifact from Github Packages repository"
+  mkdir -p target
+  gh release download --pattern '*.jar' -R cf-toolsuite/$APP_NAME -D target
+  APP_VERSION=$(determine_jar_release)
+fi
 
 echo "-- Pushing $APP_NAME"
 

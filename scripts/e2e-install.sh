@@ -7,6 +7,51 @@ set -e
 ORG_HOME=observability
 SPACE_HOME=cf-toolsuite
 
+function determine_jar_release() {
+  local date_pattern='[0-9]{4}\.[0-9]{2}\.[0-9]{2}'
+  local date=""
+  local current_date=""
+
+  for file in target/*.jar; do
+    if [[ $file =~ $date_pattern ]]; then
+      current_date="${BASH_REMATCH[0]}"
+      if [[ -z $date ]]; then
+        date="$current_date"
+      elif [[ $date != "$current_date" ]]; then
+        echo "Varying dates found."
+        return 1
+      fi
+    else
+      echo "No matching date found in: $file"
+      return 1
+    fi
+  done
+
+  if [[ -n $date ]]; then
+    echo $date
+  else
+    echo "No files with the expected date pattern found."
+    return 1
+  fi
+}
+
+# Define a function that checks for the existence of a file within the 'target' sub-directory.
+# The function takes one parameter: the first few characters of a filename.
+file_exists() {
+  local starts_with=$1
+  local search_pattern="./target/${starts_with}-1.0-SNAPSHOT.jar"
+
+  # Use find command to search for files matching the pattern
+  files_found=$(find . -wholename "$search_pattern")
+
+  # Check if the find command's result is non-empty
+  if [[ -n $files_found ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
 echo "-- Starting installation"
 
 # Create configuration directory
@@ -36,7 +81,7 @@ echo "-- Verify required configuration files exist"
 
 if [ ! -e "/tmp/config/secrets.cf-butler.$SUFFIX.json" ] || [ ! -e "/tmp/config/secrets.cf-archivist.$SUFFIX.json" ]; then
   echo "Required configuration files missing!  Please place secrets.cf-butler.$SUFFIX.json and secrets.cf-archivist.$SUFFIX.json inside the /tmp/config directory.  Then attempt to re-run this script."
-  echo "If you haven't created these files yet, look in the samples directory for inspiration."
+  echo "If you haven't created these files yet, look in the footprints/tas/config directory for inspiration."
   exit 1
 fi
 
@@ -112,6 +157,63 @@ if [ "$BUILD_PROJECTS" == "true" ]; then
   if [ "$MODE" == "archivist-only" ] || [ "$MODE" == "full-install" ]; then
     cd cf-archivist
     ./mvnw clean verify --batch-mode -DskipTests -Pproduction,expose-runtime-metadata
+    cd ..
+  fi
+else
+  echo "-- Verifying artifacts exist"
+  if [ "$MODE" == "butler-only" ] || [ "$MODE" == "full-install" ]; then
+    cd cf-butler
+    if file_exists "cf-butler"; then
+      echo "+- cf-butler artifact exists!"
+    else
+      echo "+- Fetching latest available cf-butler artifact from Github Packages repository"
+      mkdir -p target
+      gh release download --pattern '*.jar' -D target
+      RELEASE=$(determine_jar_release)
+      sed -i "s/1.0-SNAPSHOT/$RELEASE/g" manifest.yml
+    fi
+    cd ..
+  fi
+
+  if [ "$MODE" == "hoover-only" ] || [ "$MODE" == "full-install" ]; then
+    cd cf-hoover
+    if file_exists "cf-hoover"; then
+      echo "+- cf-hoover artifact exists!"
+    else
+      echo "+- Fetching latest available cf-hoover artifact from Github Packages repository"
+      mkdir -p target
+      gh release download --pattern '*.jar' -D target
+      RELEASE=$(determine_jar_release)
+      sed -i "s/1.0-SNAPSHOT/$RELEASE/g" manifest.yml
+    fi
+    cd ..
+  fi
+
+  if [ "$MODE" == "hoover-only" ] || [ "$MODE" == "full-install" ]; then
+    cd cf-hoover-ui
+    if file_exists "cf-hoover-ui"; then
+      echo "+- cf-hoover-ui artifact exists!"
+    else
+      echo "+- Fetching latest available cf-hoover-ui artifact from Github Packages repository"
+      mkdir -p target
+      gh release download --pattern '*.jar' -D target
+      RELEASE=$(determine_jar_release)
+      sed -i "s/1.0-SNAPSHOT/$RELEASE/g" manifest.yml
+    fi
+    cd ..
+  fi
+
+  if [ "$MODE" == "archivist-only" ] || [ "$MODE" == "full-install" ]; then
+    cd cf-archivist
+    if file_exists "cf-archivist"; then
+      echo "+- cf-archivist artifact exists!"
+    else
+      echo "+- Fetching latest available cf-archivist artifact from Github Packages repository"
+      mkdir -p target
+      gh release download --pattern '*.jar' -D target
+      RELEASE=$(determine_jar_release)
+      sed -i "s/1.0-SNAPSHOT/$RELEASE/g" manifest.yml
+    fi
     cd ..
   fi
 fi
