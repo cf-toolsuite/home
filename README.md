@@ -14,10 +14,10 @@ The home for ideas and exploration.  Mainly documentation, videos and discussion
 ### Pre-built artifacts
 
 * `.jar` files
-  * [cf-archivist](https://github.com/cf-toolsuite/cf-archivist/packages/1895036)
-  * [cf-butler](https://github.com/cf-toolsuite/cf-butler/packages/809627)
-  * [cf-hoover](https://github.com/cf-toolsuite/cf-hoover/packages/809701)
-  * [cf-hoover-ui](https://github.com/cf-toolsuite/cf-hoover-ui/packages/809727)
+  * [cf-archivist](https://github.com/cf-toolsuite/cf-archivist/releases)
+  * [cf-butler](https://github.com/cf-toolsuite/cf-butler/releases)
+  * [cf-hoover](https://github.com/cf-toolsuite/cf-hoover/releases)
+  * [cf-hoover-ui](https://github.com/cf-toolsuite/cf-hoover-ui/releases)
   * [spring-boot-starter-runtime-meta-data](https://central.sonatype.com/artifact/org.cftoolsuite.actuator/spring-boot-starter-runtime-metadata)
 
 * Container images on [Docker Hub](https://hub.docker.com/repositories/cftoolsuite)
