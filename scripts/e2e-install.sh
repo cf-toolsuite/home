@@ -52,6 +52,29 @@ file_exists() {
   fi
 }
 
+# clones the repo if it doesn't exist
+function clone_repo() {
+  local repo="$1"
+  name=$(echo "$repo" | cut -d '/' -f 2)
+  if [ ! -d "$name" ]; then
+    gh repo clone "$repo"
+  else
+    echo "$repo already exists, skipping clone..."
+  fi
+}
+
+# forks then clones the repo if it doesn't exist
+function fork_clone_repo() {
+  local repo="$1"
+  local fork_name="$2"
+  name=$(echo "$fork_name" | cut -d '/' -f 2)
+  if [ ! -d "$name" ]; then
+    gh repo fork "$repo" --fork-name "$fork_name" --clone --remote
+  else
+    echo "$repo already exists, skipping fork and clone..."
+  fi
+}
+
 echo "-- Starting installation"
 
 # Create configuration directory
@@ -87,14 +110,14 @@ fi
 
 echo "-- Setting API endpoint for target foundation"
 
-cf api $CF_API
+cf api "$CF_API"
 
 echo "-- Authenticating"
 
 if [ "$CF_ADMIN" = "sso" ]; then
   cf login --sso
 else
-  cf login -u $CF_ADMIN -p $CF_PASSWORD
+  cf login -u "$CF_ADMIN" -p "$CF_PASSWORD"
 fi
 
 echo "-- Creating organization and space"
@@ -124,13 +147,13 @@ cd /tmp
 
 if [ "$CLONE_PROJECTS" == "true" ]; then
   echo "-- Cloning Github repositories"
-  gh repo clone cf-toolsuite/cf-butler
-  gh repo fork cf-toolsuite/cf-butler-sample-config --fork-name cf-butler-config --clone --remote
-  gh repo clone cf-toolsuite/cf-hoover
-  gh repo fork cf-toolsuite/cf-hoover-config --clone --remote
-  gh repo clone cf-toolsuite/cf-hoover-ui
-  gh repo clone cf-toolsuite/cf-archivist
-  gh repo fork cf-toolsuite/cf-archivist-sample-config --fork-name cf-archivist-config --clone --remote
+  clone_repo 'cf-toolsuite/cf-butler'
+  fork_clone_repo 'cf-toolsuite/cf-butler-sample-config' 'cf-butler-config'
+  clone_repo 'cf-toolsuite/cf-hoover'
+  fork_clone_repo 'cf-toolsuite/cf-hoover-config' 'cf-hoover-config'
+  clone_repo 'cf-toolsuite/cf-hoover-ui'
+  clone_repo 'cf-toolsuite/cf-archivist'
+  fork_clone_repo 'cf-toolsuite/cf-archivist-sample-config' 'cf-archivist-config'
 fi
 
 if [ "$BUILD_PROJECTS" == "true" ]; then
@@ -168,9 +191,9 @@ else
     else
       echo "+- Fetching latest available cf-butler artifact from Github Packages repository"
       mkdir -p target
-      gh release download --pattern '*.jar' -D target
+      gh release download --pattern '*.jar' -D target --skip-existing
       RELEASE=$(determine_jar_release)
-      sed -i "s/1.0-SNAPSHOT/$RELEASE/g" manifest.yml
+      sed -i'' -e "s/1.0-SNAPSHOT/$RELEASE/g" manifest.yml
     fi
     cd ..
   fi
@@ -182,9 +205,9 @@ else
     else
       echo "+- Fetching latest available cf-hoover artifact from Github Packages repository"
       mkdir -p target
-      gh release download --pattern '*.jar' -D target
+      gh release download --pattern '*.jar' -D target --skip-existing
       RELEASE=$(determine_jar_release)
-      sed -i "s/1.0-SNAPSHOT/$RELEASE/g" manifest.yml
+      sed -i'' -e "s/1.0-SNAPSHOT/$RELEASE/g" manifest.yml
     fi
     cd ..
   fi
@@ -196,9 +219,9 @@ else
     else
       echo "+- Fetching latest available cf-hoover-ui artifact from Github Packages repository"
       mkdir -p target
-      gh release download --pattern '*.jar' -D target
+      gh release download --pattern '*.jar' -D target --skip-existing
       RELEASE=$(determine_jar_release)
-      sed -i "s/1.0-SNAPSHOT/$RELEASE/g" manifest.yml
+      sed -i'' -e "s/1.0-SNAPSHOT/$RELEASE/g" manifest.yml
     fi
     cd ..
   fi
@@ -210,9 +233,9 @@ else
     else
       echo "+- Fetching latest available cf-archivist artifact from Github Packages repository"
       mkdir -p target
-      gh release download --pattern '*.jar' -D target
+      gh release download --pattern '*.jar' -D target --skip-existing
       RELEASE=$(determine_jar_release)
-      sed -i "s/1.0-SNAPSHOT/$RELEASE/g" manifest.yml
+      sed -i'' -e'' -e "s/1.0-SNAPSHOT/$RELEASE/g" manifest.yml
     fi
     cd ..
   fi
@@ -234,7 +257,7 @@ if [ "$MODE" == "hoover-only" ] || [ "$MODE" == "full-install" ]; then
   repository_url=$(git remote get-url origin)
   # Extract the owner from the repository URL
   owner=$(echo "$repository_url" | cut -d'/' -f4)
-  sed -i "s/cf-toolsuite/$owner/g" "config/config-server.json"
+  sed -i'' -e "s/cf-toolsuite/$owner/g" "config/config-server.json"
   ./scripts/deploy.with-registry.sh
   cd ..
 fi
