@@ -87,7 +87,7 @@ echo "-- Creating a MySQL database instance"
 cf create-service p.mysql $MYSQL_SERVICE_PLAN $APP_NAME-backend
 while [[ $(cf service $APP_NAME-backend) != *"succeeded"* ]]; do
     echo "$APP_NAME-backend is not ready yet..."
-    sleep 5s
+    sleep 5
 done
 
 echo "-- Binding $APP_NAME to $APP_NAME-backend"
