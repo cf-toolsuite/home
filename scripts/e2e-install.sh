@@ -208,6 +208,7 @@ else
       gh release download --pattern '*.jar' -D target --skip-existing
       RELEASE=$(determine_jar_release)
       sed -i'' -e "s/1.0-SNAPSHOT/$RELEASE/g" manifest.yml
+      sed -i'' -e "s/1.0-SNAPSHOT/$RELEASE/g" manifest.with-registry.yml
     fi
     cd ..
   fi
@@ -235,7 +236,7 @@ else
       mkdir -p target
       gh release download --pattern '*.jar' -D target --skip-existing
       RELEASE=$(determine_jar_release)
-      sed -i'' -e'' -e "s/1.0-SNAPSHOT/$RELEASE/g" manifest.yml
+      sed -i'' -e "s/1.0-SNAPSHOT/$RELEASE/g" manifest.yml
     fi
     cd ..
   fi
@@ -250,13 +251,16 @@ if [ "$MODE" == "butler-only" ] || [ "$MODE" == "full-install" ]; then
 fi
 
 if [ "$MODE" == "hoover-only" ] || [ "$MODE" == "full-install" ]; then
-  cd cf-hoover
-  mkdir -p config
-  cp -f samples/config-server.json config
+  cd cf-hoover-config
   # Get the repository URL using `git remote get-url`
   repository_url=$(git remote get-url origin)
-  # Extract the owner from the repository URL
-  owner=$(echo "$repository_url" | cut -d'/' -f4)
+  # Extract the owner from the repository URL (SSH or https)
+  owner=$(echo "$repository_url" | sed -nr 's/.*github.com[\/:](.*)\/.*/\1/p')
+
+  cd ../cf-hoover
+  mkdir -p config
+  cp -f samples/config-server.json config
+
   sed -i'' -e "s/cf-toolsuite/$owner/g" "config/config-server.json"
   ./scripts/deploy.with-registry.sh
   cd ..
