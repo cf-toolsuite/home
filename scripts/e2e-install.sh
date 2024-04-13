@@ -84,7 +84,7 @@ mkdir -p /tmp/config
 # Install cf-toolsuite to a target foundation
 
 if [ -z "$1" ] && [ -z "$2" ] && [ -z "$3" ]; then
-	echo "Usage: e2e-install.sh {cf-api} {cf-admin-username} {cf-admin-password} {clone-projects} {build-projects} {mode} {config-suffix}"
+	echo "Usage: e2e-install.sh {cf-api} {cf-admin-username} {cf-admin-password} {clone-projects} {build-projects} {mode} {config-suffix} {gateway-deployed}"
 	exit 1
 fi
 
@@ -99,6 +99,7 @@ CLONE_PROJECTS="${4:-true}"
 BUILD_PROJECTS="${5:-true}"
 MODE="${6:-full-install}"
 SUFFIX="${7:-dhaka}"
+GATEWAY_DEPLOYED="${8:-false}"
 
 echo "-- Verify required configuration files exist"
 
@@ -246,7 +247,12 @@ echo "-- Deploying applications"
 
 if [ "$MODE" == "butler-only" ] || [ "$MODE" == "full-install" ]; then
   cd cf-butler
-  ./scripts/deploy.alt.sh --with-credhub /tmp/config/secrets.cf-butler.$SUFFIX.json
+  if [[ "$GATEWAY_DEPLOYED" == "true" ]]; then
+    ./scripts/deploy.alt.sh --with-credhub /tmp/config/secrets.cf-butler.$SUFFIX.json --no-route
+    cf map-route cf-butler apps.internal --hostname cf-butler
+  else
+    ./scripts/deploy.alt.sh --with-credhub /tmp/config/secrets.cf-butler.$SUFFIX.json
+  fi
   cd ..
 fi
 
@@ -262,20 +268,64 @@ if [ "$MODE" == "hoover-only" ] || [ "$MODE" == "full-install" ]; then
   cp -f samples/config-server.json config
 
   sed -i'' -e "s/cf-toolsuite/$owner/g" "config/config-server.json"
-  ./scripts/deploy.with-registry.sh
+
+  if [[ "$GATEWAY_DEPLOYED" == "true" ]]; then
+    ./scripts/deploy.with-registry.sh --no-route
+    cf map-route cf-hoover apps.internal --hostname cf-hoover
+  else
+    ./scripts/deploy.with-registry.sh
+  fi
   cd ..
 fi
 
 if [ "$MODE" == "hoover-only" ] || [ "$MODE" == "full-install" ]; then
   cd cf-hoover-ui
-  ./scripts/deploy.sh
+  if [[ "$GATEWAY_DEPLOYED" == "true" ]]; then
+    ./scripts/deploy.sh --no-route
+    cf map-route cf-hoover-ui apps.internal --hostname cf-hoover-ui
+  else
+    ./scripts/deploy.sh
+  fi
   cd ..
 fi
 
 if [ "$MODE" == "archivist-only" ] || [ "$MODE" == "full-install" ]; then
   cd cf-archivist
-  ./scripts/deploy.alt.sh --with-credhub /tmp/config/secrets.cf-archivist.$SUFFIX.json
+  if [[ "$GATEWAY_DEPLOYED" == "true" ]]; then
+    ./scripts/deploy.alt.sh --with-credhub /tmp/config/secrets.cf-archivist.$SUFFIX.json --no-route
+    cf map-route cf-archivist apps.internal --hostname cf-archivist
+  else
+    ./scripts/deploy.alt.sh --with-credhub /tmp/config/secrets.cf-archivist.$SUFFIX.json
+  fi
   cd ..
+fi
+
+if [[ "$GATEWAY_DEPLOYED" == "true" ]]; then
+  GW_NAME=cf-toolsuite
+  cf create-service p.gateway standard $GW_NAME -c "{ \"host\": \"$GW_NAME\" }"
+  for (( i = 0; i < 90; i++ )); do
+    if [[ $(cf service $GW_NAME) != *"succeeded"* ]]; then
+      echo "$GW_NAME is not ready yet..."
+      sleep 10
+    else
+      break
+    fi
+  done
+
+  if [ "$MODE" == "butler-only" ] || [ "$MODE" == "full-install" ]; then
+    cf bind-service cf-butler $GW_NAME -c '{ "routes": [ { "path": "/butler/accounting/**,/butler/actuator/**,/butler/collect,/butler/h2-console,/butler/products/**,/butler/store/**,/butler/events/**,/butler/metadata/**,/butler/policies/**,/butler/snapshot/**", "uri": "lb://cf-butler.apps.internal", "filters": [ "StripPrefix=1" ] } ] }'
+    cf restage cf-butler
+  fi
+  if [ "$MODE" == "hoover-only" ] || [ "$MODE" == "full-install" ]; then
+    cf bind-service cf-hoover $GW_NAME -c '{ "routes": [ { "path": "/hoover/accounting/**,/hoover/actuator/**,/hoover/snapshot/**", "uri": "lb://cf-hoover.apps.internal", "filters": [ "StripPrefix=1" ] } ] }'
+    cf restage cf-hoover
+    cf bind-service cf-hoover-ui $GW_NAME -c '{ "routes": [ { "path": "/hoover-ui/,/cf-hoover-ui/cache/refresh,/hoover-ui/accounting/**,/hoover-ui/actuator/**,/hoover-ui/snapshot/**", "uri": "lb://cf-hoover-ui.apps.internal", "filters": [ "StripPrefix=1" ] } ] }'
+    cf restage cf-hoover-ui
+  fi
+  if [ "$MODE" == "archivist-only" ] || [ "$MODE" == "full-install" ]; then
+    cf bind-service cf-hoover-ui $GW_NAME -c '{ "routes": [ { "path": "/archivist/,/archivist/cache/refresh,/archivist/accounting/**,/archivist/actuator/**,/archivist/h2-console,/archivist/policies/**,/archivist/snapshot/**", "uri": "lb://cf-hoover-ui.apps.internal", "filters": [ "StripPrefix=1" ] } ] }'
+    cf restage cf-archivist
+  fi
 fi
 
 echo "-- Completed installation"
