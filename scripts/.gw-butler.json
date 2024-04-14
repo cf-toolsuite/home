@@ -10,7 +10,7 @@
         },
         {
             "path": "/butler/collect,/butler/policies,/butler/policies/execute,/butler/policies/refresh",
-            "uri": "lb://cf-hoover-ui.apps.internal",
+            "uri": "lb://cf-butler.apps.internal",
             "method": "POST",
             "filters": [
                 "StripPrefix=1"
@@ -18,7 +18,7 @@
         },
         {
             "path": "/butler/metadata/**",
-            "uri": "lb://cf-hoover-ui.apps.internal",
+            "uri": "lb://cf-butler.apps.internal",
             "method": "PATCH",
             "filters": [
                 "StripPrefix=1"

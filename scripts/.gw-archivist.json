@@ -2,7 +2,7 @@
     "routes": [
         {
             "path": "/archivist/,/archivist/accounting/**,/archivist/actuator/**,/archivist/h2-console,/archivist/policies/**,/archivist/snapshot/**",
-            "uri": "lb://cf-hoover-ui.apps.internal",
+            "uri": "lb://cf-archivist.apps.internal",
             "method": "GET",
             "filters": [
                 "StripPrefix=1"
@@ -10,7 +10,7 @@
         },
         {
             "path": "/archivist/cache/refresh,/archivist/policies/execute",
-            "uri": "lb://cf-hoover-ui.apps.internal",
+            "uri": "lb://cf-archivist.apps.internal",
             "method": "POST",
             "filters": [
                 "StripPrefix=1"
