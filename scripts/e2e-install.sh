@@ -313,17 +313,17 @@ if [[ "$GATEWAY_DEPLOYED" == "true" ]]; then
   done
 
   if [ "$MODE" == "butler-only" ] || [ "$MODE" == "full-install" ]; then
-    cf bind-service cf-butler $GW_NAME -c '{ "routes": [ { "path": "/butler/accounting/**,/butler/actuator/**,/butler/collect,/butler/h2-console,/butler/products/**,/butler/store/**,/butler/events/**,/butler/metadata/**,/butler/policies/**,/butler/snapshot/**", "uri": "lb://cf-butler.apps.internal", "filters": [ "StripPrefix=1" ] } ] }'
+    cf bind-service cf-butler $GW_NAME -c .gw-butler.json
     cf restage cf-butler
   fi
   if [ "$MODE" == "hoover-only" ] || [ "$MODE" == "full-install" ]; then
-    cf bind-service cf-hoover $GW_NAME -c '{ "routes": [ { "path": "/hoover/accounting/**,/hoover/actuator/**,/hoover/snapshot/**", "uri": "lb://cf-hoover.apps.internal", "filters": [ "StripPrefix=1" ] } ] }'
+    cf bind-service cf-hoover $GW_NAME -c .gw-hoover.json
     cf restage cf-hoover
-    cf bind-service cf-hoover-ui $GW_NAME -c '{ "routes": [ { "path": "/hoover-ui/,/cf-hoover-ui/cache/refresh,/hoover-ui/accounting/**,/hoover-ui/actuator/**,/hoover-ui/snapshot/**", "uri": "lb://cf-hoover-ui.apps.internal", "filters": [ "StripPrefix=1" ] } ] }'
+    cf bind-service cf-hoover-ui $GW_NAME -c .gw-hoover-ui.json
     cf restage cf-hoover-ui
   fi
   if [ "$MODE" == "archivist-only" ] || [ "$MODE" == "full-install" ]; then
-    cf bind-service cf-hoover-ui $GW_NAME -c '{ "routes": [ { "path": "/archivist/,/archivist/cache/refresh,/archivist/accounting/**,/archivist/actuator/**,/archivist/h2-console,/archivist/policies/**,/archivist/snapshot/**", "uri": "lb://cf-hoover-ui.apps.internal", "filters": [ "StripPrefix=1" ] } ] }'
+    cf bind-service cf-archivist $GW_NAME -c .gw-archivist.json
     cf restage cf-archivist
   fi
 fi

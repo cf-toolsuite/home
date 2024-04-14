@@ -1,0 +1,28 @@
+{
+    "routes": [
+        {
+            "path": "/butler/accounting/**,/butler/actuator/**,/butler/h2-console,/butler/products/**,/butler/store/**,/butler/events/**,/butler/metadata/**,/butler/policies/**,/butler/snapshot/**",
+            "uri": "lb://cf-butler.apps.internal",
+            "method": "GET",
+            "filters": [
+                "StripPrefix=1"
+            ]
+        },
+        {
+            "path": "/butler/collect,/butler/policies,/butler/policies/execute,/butler/policies/refresh",
+            "uri": "lb://cf-hoover-ui.apps.internal",
+            "method": "POST",
+            "filters": [
+                "StripPrefix=1"
+            ]
+        },
+        {
+            "path": "/butler/metadata/**",
+            "uri": "lb://cf-hoover-ui.apps.internal",
+            "method": "PATCH",
+            "filters": [
+                "StripPrefix=1"
+            ]
+        }
+    ]
+}

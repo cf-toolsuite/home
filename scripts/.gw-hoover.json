@@ -1,0 +1,12 @@
+{
+    "routes": [
+        {
+            "path": "/hoover/accounting/**,/hoover/actuator/**,/hoover/snapshot/**",
+            "uri": "lb://cf-hoover.apps.internal",
+            "method": "GET",
+            "filters": [
+                "StripPrefix=1"
+            ]
+        }
+    ]
+}

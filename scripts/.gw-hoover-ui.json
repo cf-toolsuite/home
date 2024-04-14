@@ -1,0 +1,19 @@
+{
+    "routes": [
+        {
+            "path": "/hoover-ui/,/hoover-ui/accounting/**,/hoover-ui/actuator/**,/hoover-ui/snapshot/**",
+            "uri": "lb://cf-hoover-ui.apps.internal",
+            "filters": [
+                "StripPrefix=1"
+            ]
+        },
+        {
+            "path": "/cf-hoover-ui/cache/refresh",
+            "uri": "lb://cf-hoover-ui.apps.internal",
+            "method": "POST",
+            "filters": [
+                "StripPrefix=1"
+            ]
+        }
+    ]
+}
