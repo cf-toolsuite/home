@@ -8,7 +8,7 @@
             ]
         },
         {
-            "path": "/cf-hoover-ui/cache/refresh",
+            "path": "/hoover-ui/cache/refresh",
             "uri": "lb://cf-hoover-ui.apps.internal",
             "method": "POST",
             "filters": [
