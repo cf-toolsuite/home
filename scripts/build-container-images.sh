@@ -28,6 +28,7 @@ if [ "$MODE" == "butler-only" ] || [ "$MODE" == "full-install" ]; then
     --path . \
     --env BP_MAVEN_ACTIVE_PROFILES=mysql,expose-runtime-metadata \
     --env BP_JVM_VERSION=21.* \
+    --env BP_NATIVE_IMAGE=false \
     --builder paketobuildpacks/builder-jammy-tiny \
     --volume $HOME/.m2:/home/cnb/.m2:rw
   cd ..
@@ -40,6 +41,7 @@ if [ "$MODE" == "hoover-only" ] || [ "$MODE" == "full-install" ]; then
     --path . \
     --env BP_MAVEN_ACTIVE_PROFILES=expose-runtime-metadata \
     --env BP_JVM_VERSION=21.* \
+    --env BP_NATIVE_IMAGE=false \
     --builder paketobuildpacks/builder-jammy-tiny \
     --volume $HOME/.m2:/home/cnb/.m2:rw
   cd ..
@@ -53,6 +55,7 @@ if [ "$MODE" == "hoover-only" ] || [ "$MODE" == "full-install" ]; then
     --env BP_MAVEN_BUILD_ARGUMENTS="clean verify --batch-mode -DskipTests" \
     --env BP_MAVEN_ACTIVE_PROFILES=production,expose-runtime-metadata \
     --env BP_JVM_VERSION=21.* \
+    --env BP_NATIVE_IMAGE=false \
     --builder paketobuildpacks/builder-jammy-tiny \
     --volume $HOME/.m2:/home/cnb/.m2:rw
   cd ..
@@ -65,6 +68,7 @@ if [ "$MODE" == "archivist-only" ] || [ "$MODE" == "full-install" ]; then
     --env BP_MAVEN_BUILD_ARGUMENTS="clean verify --batch-mode -DskipTests" \
     --env BP_MAVEN_ACTIVE_PROFILES=mysql,production,expose-runtime-metadata \
     --env BP_JVM_VERSION=21.* \
+    --env BP_NATIVE_IMAGE=false \
     --builder paketobuildpacks/builder-jammy-tiny \
     --volume $HOME/.m2:/home/cnb/.m2:rw
   cd ..
@@ -79,6 +83,7 @@ if [ "$MODE" == "support-only" ] || [ "$MODE" == "full-install" ]; then
   pack build cftoolsuite/config-server \
     --path . \
     --env BP_JVM_VERSION=21.* \
+    --env BP_NATIVE_IMAGE=false \
     --builder paketobuildpacks/builder-jammy-tiny \
     --volume $HOME/.m2:/home/cnb/.m2:rw
   cd ../../../../../
@@ -89,6 +94,7 @@ if [ "$MODE" == "support-only" ] || [ "$MODE" == "full-install" ]; then
   pack build cftoolsuite/discovery-service \
     --path . \
     --env BP_JVM_VERSION=21.* \
+    --env BP_NATIVE_IMAGE=false \
     --builder paketobuildpacks/builder-jammy-tiny \
     --volume $HOME/.m2:/home/cnb/.m2:rw
   cd ../../../../../
@@ -99,6 +105,7 @@ if [ "$MODE" == "support-only" ] || [ "$MODE" == "full-install" ]; then
   pack build cftoolsuite/microservices-console \
     --path . \
     --env BP_JVM_VERSION=21.* \
+    --env BP_NATIVE_IMAGE=false \
     --builder paketobuildpacks/builder-jammy-tiny \
     --volume $HOME/.m2:/home/cnb/.m2:rw
   cd ../../../../../
