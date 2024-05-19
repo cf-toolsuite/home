@@ -13,7 +13,7 @@ services:
     environment:
       - DOCKER_IP=$DOCKER_IP
       - JAVA_ARTIFACTS_FETCH_MODE=obtain-jars-from-runtime-metadata
-      - JAVA_OPTS=-XX:+UseG1GC -XX:+UseStringDeduplication -Djava.security.egd=file:///dev/urandom -Xmx3G -XX:MaxDirectMemorySize=1G
+      - JAVA_OPTS=-XX:+UseG1GC -XX:+UseStringDeduplication -Djava.security.egd=file:///dev/urandom -Xmx4G -XX:MaxDirectMemorySize=2G
       - SPRING_APPLICATION_NAME=butler
       - SPRING_PROFILES_ACTIVE=on-demand
       - SPRING_R2DBC_URL=r2dbc:mysql://butler-db:3306/cf-butler
@@ -22,7 +22,7 @@ services:
       - MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED=true
       - MANAGEMENT_ENDPOINT_HEALTH_SHOW-DETAILS=always
       - MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED=true
-      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=env,info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus
 
   archivist:
     image: cftoolsuite/cf-archivist
@@ -33,6 +33,9 @@ services:
     environment:
       - CF_BASE-URL=https://hoover
       - DOCKER_IP=$DOCKER_IP
+      - EUREKA_INSTANCE_LEASE-RENEWAL-INTERNAL-IN-SECONDS=10
+      - EUREKA_INSTANCE_HEALTH-CHECK-URL-PATH=/actuator/health
+      - EUREKA_INSTANCE_METADATA-MAP_STARTUP=${random.int}
       - EUREKA_INSTANCE_PREFER-IP-ADDRESS=true
       - EUREKA_CLIENT_REGISTER-WITH-EUREKA=true
       - EUREKA_CLIENT_FETCH-REGISTRY=true
@@ -43,7 +46,7 @@ services:
       - MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED=true
       - MANAGEMENT_ENDPOINT_HEALTH_SHOW-DETAILS=always
       - MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED=true
-      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=env,info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus
       - SERVER_PORT=8081
       - SPRING_APPLICATION_NAME=archivist
       - SPRING_CLOUD_DISCOVERY_ENABLED=true
@@ -58,16 +61,19 @@ services:
       - 8082:8082
     environment:
       - DOCKER_IP=$DOCKER_IP
+      - EUREKA_INSTANCE_LEASE-RENEWAL-INTERNAL-IN-SECONDS=10
+      - EUREKA_INSTANCE_HEALTH-CHECK-URL-PATH=/actuator/health
+      - EUREKA_INSTANCE_METADATA-MAP_STARTUP=${random.int}
       - EUREKA_INSTANCE_PREFER-IP-ADDRESS=true
       - EUREKA_CLIENT_REGISTER-WITH-EUREKA=true
       - EUREKA_CLIENT_FETCH-REGISTRY=true
       - EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE=http://discovery-service:8761/eureka/
       - EUREKA_CLIENT_HEALTHCHECK_ENABLED=true
-      - JAVA_OPTS=-XX:+UseG1GC -XX:+UseStringDeduplication -Djava.security.egd=file:///dev/urandom -Xmx2G
+      # - JAVA_OPTS=-XX:+UseG1GC -XX:+UseStringDeduplication -Djava.security.egd=file:///dev/urandom -Xmx2G
       - MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED=true
       - MANAGEMENT_ENDPOINT_HEALTH_SHOW-DETAILS=always
       - MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED=true
-      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=env,info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus
       - SERVER_PORT=8082
       - SPRING_APPLICATION_NAME=hoover
       - SPRING_CLOUD_DISCOVERY_ENABLED=true
@@ -80,16 +86,19 @@ services:
     environment:
       - CF_BASE-URL=https://hoover
       - DOCKER_IP=$DOCKER_IP
+      - EUREKA_INSTANCE_LEASE-RENEWAL-INTERNAL-IN-SECONDS=10
+      - EUREKA_INSTANCE_METADATA-MAP_STARTUP=${random.int}
+      - EUREKA_INSTANCE_HEALTH-CHECK-URL-PATH=/actuator/health
       - EUREKA_INSTANCE_PREFER-IP-ADDRESS=true
       - EUREKA_CLIENT_REGISTER-WITH-EUREKA=true
       - EUREKA_CLIENT_FETCH-REGISTRY=true
       - EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE=http://discovery-service:8761/eureka/
       - EUREKA_CLIENT_HEALTHCHECK_ENABLED=true
-      - JAVA_OPTS=-XX:+UseG1GC -XX:+UseStringDeduplication -Djava.security.egd=file:///dev/urandom -Xmx2G
+      # - JAVA_OPTS=-XX:+UseG1GC -XX:+UseStringDeduplication -Djava.security.egd=file:///dev/urandom -Xmx2G
       - SERVER_PORT=8083
       - SPRING_APPLICATION_NAME=hoover-ui
       - SPRING_CLOUD_DISCOVERY_ENABLED=true
       - MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED=true
       - MANAGEMENT_ENDPOINT_HEALTH_SHOW-DETAILS=always
       - MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED=true
-      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=env,info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus

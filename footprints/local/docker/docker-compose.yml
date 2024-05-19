@@ -6,7 +6,7 @@ services:
 
   ### PROMETHEUS
   prometheus:
-    image: prom/prometheus:v2.50.1
+    image: prom/prometheus:v2.52.0
     volumes:
       - ./prometheus/:/etc/prometheus/
       - prometheus_data:/prometheus
@@ -32,7 +32,7 @@ services:
 
   ### GRAFANA
   grafana:
-    image: grafana/grafana:10.3.4
+    image: grafana/grafana:10.3.6
     ports:
       - 3000:3000
     restart: always
@@ -41,7 +41,7 @@ services:
 
   ### DATABASE
   archivist-db:
-    image: mysql:8.3.0
+    image: mysql:8.4.0
     privileged: true
     ports:
       - 3307:3306
@@ -52,7 +52,7 @@ services:
       - archivist-db-data:/var/lib/mysql
 
   butler-db:
-    image: mysql:8.3.0
+    image: mysql:8.4.0
     privileged: true
     ports:
       - 3306:3306
