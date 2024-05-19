@@ -114,23 +114,24 @@ services:
       - 5555:5555
     environment:
       - DOCKER_IP=$DOCKER_IP
+      - EUREKA_INSTANCE_HEALTH-CHECK-URL-PATH=/actuator/health
       - EUREKA_INSTANCE_PREFER-IP-ADDRESS=true
       - EUREKA_CLIENT_REGISTER-WITH-EUREKA=true
       - EUREKA_CLIENT_FETCH-REGISTRY=true
       - EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE=http://discovery-service:8761/eureka/
       - EUREKA_CLIENT_HEALTHCHECK_ENABLED=true
       - JAVA_OPTS=-Xmx1g -XX:+UseG1GC -XX:+UseStringDeduplication
+      - INFO_TAGS_SECURITY=insecure
       - MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED=true
       - MANAGEMENT_ENDPOINT_HEALTH_SHOW-DETAILS=always
       - MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED=true
-      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus
-      - RIBBON_SERVER-LIST-REFRESH-INTERVAL=1000
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=env,info,jars,health,heapdump,threaddump,metrics,pom,scheduledtasks,loggers,mappings,prometheus
       - SERVER_PORT=5555
       - SERVER_COMPRESSION_ENABLED=true
       - SPRING_APPLICATION_NAME=microservices-console
       - SPRING_CLOUD_DISCOVERY_ENABLED=true
-      - SPRING_CLOUD_CONFIG_ENABLED=false
       - SPRING_JACKSON_SERIALIZATION_INDENT-OUTPUT=true
+      - SPRING_PROFILES_ACTIVE=insecure
 
 volumes:
   archivist-db-data: { }
