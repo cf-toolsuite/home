@@ -11,6 +11,11 @@ The home for ideas and exploration.  Mainly documentation, videos and discussion
   * [Locally](docs/Evaluating%20cf-toolsuite%20locally.pdf)
   * [on Tanzu Application Service](docs/Evaluating%20cf-toolsuite%20on%20TAS.pdf)
 
+#### Community talks
+
+* [The Secret Lives of Java Apps: Stories Told at Runtime](docs/The%20Secret%20Lives%20of%20Java%20Apps%20Stories%20Told%20at%20Runtime.pdf)
+  * delivered @ [Seattle Java Users Group](https://www.seajug.org/) (May 21, 2024)
+
 ### Pre-built artifacts
 
 * `.jar` files
