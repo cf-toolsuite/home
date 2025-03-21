@@ -18,7 +18,11 @@
 
     <properties>
         <!-- Third-party library versions -->
+<<<<<<< Updated upstream
         <spring-boot-admin.version>3.4.2</spring-boot-admin.version>
+=======
+        <spring-boot-admin.version>3.4.5</spring-boot-admin.version>
+>>>>>>> Stashed changes
     </properties>
 
     <dependencies>
