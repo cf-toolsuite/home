@@ -316,7 +316,7 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
 <<<<<<< Updated upstream
-                <version>2024.0.0</version>
+                <version>2024.0.1</version>
 =======
                 <version>2024.0.1</version>
 >>>>>>> Stashed changes
