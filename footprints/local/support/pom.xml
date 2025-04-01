@@ -59,11 +59,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-<<<<<<< Updated upstream
-        <version>3.4.2</version>
-=======
         <version>3.4.4</version>
->>>>>>> Stashed changes
         <relativePath/>
         <!-- lookup parent from repository -->
     </parent>
@@ -133,11 +129,7 @@
             <plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
-<<<<<<< Updated upstream
-                <version>4.8.6.6</version>
-=======
                 <version>4.9.3.0</version>
->>>>>>> Stashed changes
                 <configuration>
                     <xmlOutput>true</xmlOutput>
                 </configuration>
@@ -259,7 +251,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.5.2</version>
+                <version>3.5.3</version>
                 <configuration>
                     <argLine>${surefire.jacoco.args}</argLine>
                 </configuration>
@@ -267,7 +259,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>3.5.2</version>
+                <version>3.5.3</version>
                 <configuration>
                     <argLine>${failsafe.jacoco.args}</argLine>
                 </configuration>
@@ -315,11 +307,7 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-<<<<<<< Updated upstream
-                <version>2024.0.0</version>
-=======
                 <version>2024.0.1</version>
->>>>>>> Stashed changes
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
