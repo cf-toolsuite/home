@@ -2,7 +2,7 @@ FROM bellsoft/liberica-openjdk-alpine:21
 
 LABEL author="Chris Phillipson"
 
-ENV MAVEN_VERSION="3.9.6" \
+ENV MAVEN_VERSION="3.9.10" \
     M2_HOME=/usr/lib/mvn \
     MAVEN_OPTS="-Xms64m -Xmx512m -XX:+UseG1GC -XX:+UseStringDeduplication"
 
