@@ -18,7 +18,7 @@
 
     <properties>
         <!-- Third-party library versions -->
-        <spring-boot-admin.version>3.5.2</spring-boot-admin.version>
+        <spring-boot-admin.version>3.5.3</spring-boot-admin.version>
     </properties>
 
     <dependencies>
