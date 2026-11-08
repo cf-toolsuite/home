@@ -64,7 +64,7 @@ services:
 
   ### DATABASE ADMINISTRATION
   db-admin:
-    image: adminer:5.3.0
+    image: adminer:5.5.0
     ports:
       - 5050:8080
     restart: always
